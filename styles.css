@@ -1530,34 +1530,11 @@ section + section { padding-top: clamp(80px, 12vw, 140px); }
   line-height: 1.4;
 }
 
-.creator-space {
-  margin-top: 40px;
-  display: flex; align-items: center; gap: 20px;
-  padding: 24px 32px;
-  background: var(--bg-2);
-  border: 2px dashed rgba(212, 232, 74, 0.4);
-  border-radius: var(--radius-lg);
-  color: var(--lime);
-}
-.cs-badge { width: 80px; height: 80px; flex-shrink: 0; }
-.cs-text {
-  font-size: 15px;
-  color: var(--chalk-dim);
-}
-.cs-text strong {
-  font-family: var(--font-display);
-  color: var(--chalk);
-  font-size: 18px;
-  display: block;
-  margin-bottom: 4px;
-}
-
 @media (max-width: 1000px) {
   .goats { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 500px) {
   .goats { grid-template-columns: 1fr; }
-  .creator-space { flex-direction: column; text-align: center; }
 }
 
 /* ============================================================
