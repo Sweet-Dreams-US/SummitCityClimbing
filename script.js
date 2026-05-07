@@ -182,7 +182,7 @@
   }
 
   // ---- SECTION REVEAL ON SCROLL --------------------------------
-  const revealEls = document.querySelectorAll('.section-title, .lede, .pillar, .fac-card, .plan, .prog, .party, .goat, .impact-stat, .map-card, .pull-quote');
+  const revealEls = document.querySelectorAll('.section-title, .lede, .pillar, .fac-card, .plan, .prog, .party, .goat, .impact-stat, .map-card, .pull-quote, .video-card, .comp-video-card, .comp-stat, .g-card, .origin-photo, .tour-list');
   const reveal = (el) => {
     el.style.opacity = '1';
     el.style.transform = '';

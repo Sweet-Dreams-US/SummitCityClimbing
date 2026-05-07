@@ -1,0 +1,10 @@
+# Source media — too heavy for GitHub Pages.
+# Only the curated subset in /assets/img/ is shipped.
+public/
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

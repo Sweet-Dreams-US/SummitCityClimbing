@@ -9,7 +9,8 @@
 <meta property="og:description" content="Fort Wayne's first bouldering gym. Send it with us." />
 <meta property="og:type" content="website" />
 <title>Summit City Climbing Co. — Send It.</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FF6B1A' rx='20'/%3E%3Cpath d='M20 75 L40 35 L55 55 L70 25 L85 75 Z' fill='%230F0E13' stroke='%230F0E13' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="icon" type="image/png" href="assets/logos/scc-icon-fullcolor.png" />
+<link rel="apple-touch-icon" href="assets/logos/scc-icon-fullcolor.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap" rel="stylesheet">
@@ -17,16 +18,17 @@
 </head>
 <body>
 
-<!-- Page loader: a route draws itself before reveal -->
+<!-- Page loader: a route draws itself, ending at the SCC peak -->
 <div class="loader" id="loader">
   <svg viewBox="0 0 200 200" class="loader-svg" aria-hidden="true">
-    <path id="loader-path" d="M30 170 Q 60 130, 50 100 T 90 50 Q 110 30, 140 60 T 170 30" fill="none" stroke="#FF6B1A" stroke-width="6" stroke-linecap="round"/>
+    <path id="loader-path" d="M30 170 Q 60 130, 50 100 T 90 50 Q 110 30, 140 60 T 170 30" fill="none" stroke="#F2A03A" stroke-width="6" stroke-linecap="round"/>
     <circle cx="30" cy="170" r="9" fill="#D4E84A"/>
     <circle cx="50" cy="100" r="9" fill="#5BA8E8"/>
     <circle cx="90" cy="50" r="9" fill="#E13159"/>
     <circle cx="140" cy="60" r="9" fill="#D4E84A"/>
-    <circle cx="170" cy="30" r="11" fill="#FF6B1A" stroke="#0F0E13" stroke-width="3"/>
+    <circle cx="170" cy="30" r="11" fill="#F2A03A" stroke="#0F0E13" stroke-width="3"/>
   </svg>
+  <img src="assets/logos/scc-horizontal-reversed.png" alt="Summit City Climbing Co." class="loader-logo" />
   <div class="loader-text">SENDING IT...</div>
 </div>
 
@@ -77,19 +79,16 @@
 <!-- Nav -->
 <header class="nav">
   <a href="#top" class="logo" aria-label="Summit City Climbing home">
-    <svg viewBox="0 0 100 100" width="40" height="40" aria-hidden="true">
-      <rect width="100" height="100" fill="#FF6B1A" rx="14"/>
-      <path d="M18 78 L40 32 L56 56 L72 22 L86 78 Z" fill="#0F0E13" stroke="#0F0E13" stroke-width="3" stroke-linejoin="round"/>
-    </svg>
-    <span>SUMMIT<br/>CITY</span>
+    <img src="assets/logos/scc-horizontal-reversed.png" alt="Summit City Climbing Co." class="logo-img" />
   </a>
   <nav class="nav-links" aria-label="Primary">
+    <a href="#tour">Tour</a>
     <a href="#story">Story</a>
-    <a href="#wall">The Wall</a>
     <a href="#pricing">Pricing</a>
     <a href="#programs">Programs</a>
+    <a href="#comps">Comps</a>
     <a href="#parties">Parties</a>
-    <a href="#team">GOATs</a>
+    <a href="#gallery">Gallery</a>
     <a href="#visit">Visit</a>
   </nav>
   <button class="btn-book nav-cta" data-open-book="">
@@ -199,6 +198,42 @@
   </div>
 </section>
 
+<!-- TAKE THE TOUR (gym tour + safety orientation video) -->
+<section class="tour" id="tour" aria-labelledby="tour-title">
+  <div class="container tour-grid">
+    <div class="tour-text">
+      <div class="section-eyebrow"><span class="dash"></span><span>FIRST TIME?</span></div>
+      <h2 class="section-title" id="tour-title">Take the <em>tour.</em></h2>
+      <p class="lede">Three minutes. Front desk to top-out. Where stuff is, how falling works, what "send it" actually means. Watch this before you walk in and you'll feel like a regular.</p>
+      <ul class="tour-list">
+        <li><span class="bullet">01</span><span>Sign the waiver online — saves 5 mins at the desk</span></li>
+        <li><span class="bullet">02</span><span>Wear comfy clothes you can move in. Skip jewelry.</span></li>
+        <li><span class="bullet">03</span><span>$4 rental shoes &amp; chalk are at the front</span></li>
+        <li><span class="bullet">04</span><span>Tell us it's your first time — a GOAT walks you through</span></li>
+      </ul>
+      <div class="tour-ctas">
+        <button class="btn-primary" data-open-book="day-pass">Book a First Visit</button>
+        <a href="#faq" class="btn-ghost">More questions →</a>
+      </div>
+    </div>
+
+    <div class="video-card">
+      <div class="video-wrap">
+        <iframe
+          src="https://customer-w6h9o08eg118alny.cloudflarestream.com/7f889f3648c8b5d4dd740bed21052102/iframe?preload=metadata&amp;poster=https%3A%2F%2Fcustomer-w6h9o08eg118alny.cloudflarestream.com%2F7f889f3648c8b5d4dd740bed21052102%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D2s%26height%3D720"
+          loading="lazy"
+          title="Summit City Climbing — Gym Tour and Safety Orientation"
+          allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+          allowfullscreen></iframe>
+      </div>
+      <div class="video-meta">
+        <span class="video-tag">▶ GYM TOUR</span>
+        <span class="video-time">3 MIN · SAFETY + LAYOUT</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- MISSION / 3 PILLARS -->
 <section class="mission" id="story">
   <div class="container">
@@ -248,7 +283,11 @@
       </div>
     </div>
 
-    <div class="origin-visual" aria-hidden="true">
+    <div class="origin-visual">
+      <div class="origin-photo">
+        <img src="assets/img/05-wall-action.jpg" alt="Climbers on the wall at Summit City Climbing" loading="lazy" decoding="async" />
+        <div class="origin-photo-tag">EST. 2024 · 1331 E BERRY ST</div>
+      </div>
       <div class="map-card">
         <div class="map-label">FORT WAYNE → INDIANAPOLIS</div>
         <svg viewBox="0 0 320 320" class="map-svg">
@@ -295,10 +334,12 @@
     <h2 class="section-title">2,130 square feet of <span class="hl-lime">problems.</span></h2>
 
     <div class="facility-grid">
-      <div class="fac-card fac-feature">
-        <div class="fac-num"><span>10–15</span><em>FT</em></div>
-        <h4>BOULDERING WALLS</h4>
-        <p>Top-out style walls in a chalked-out playground. New problems set V0 through V8 — nothing is permanent.</p>
+      <div class="fac-card fac-feature" style="--fac-bg: url('assets/img/05-wall-action.jpg')">
+        <div class="fac-feature-inner">
+          <div class="fac-num"><span>10–15</span><em>FT</em></div>
+          <h4>BOULDERING WALLS</h4>
+          <p>Top-out style walls in a chalked-out playground. New problems set V0 through V8 — nothing is permanent.</p>
+        </div>
       </div>
       <div class="fac-card">
         <div class="fac-num"><span>24°</span><em>WALL</em></div>
@@ -516,6 +557,48 @@
   </div>
 </section>
 
+<!-- COMPETITIONS / FINALS -->
+<section class="comps" id="comps" aria-labelledby="comps-title">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>COMPETITIONS</span></div>
+    <h2 class="section-title" id="comps-title">Comp night looks like <em>this.</em></h2>
+    <p class="lede">A few times a year we shut the doors, set fresh problems, crank the speakers, and hand prizes to whoever flashes the hardest. Beginners climb. Crushers crush. Everyone yells.</p>
+
+    <div class="comps-grid">
+      <div class="comp-video-card">
+        <div class="video-wrap wide">
+          <iframe
+            src="https://customer-w6h9o08eg118alny.cloudflarestream.com/8645f286a03971fc7a1043674bcb360e/iframe?preload=metadata"
+            loading="lazy"
+            title="Summit City Climbing — Finals Video"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowfullscreen></iframe>
+        </div>
+        <div class="video-overlay-meta">
+          <span class="video-tag">▶ FINALS</span>
+          <span class="video-time">CHALK · CROWDS · SENDS</span>
+        </div>
+      </div>
+
+      <div class="comps-side">
+        <div class="comp-stat">
+          <div class="big-num lime">3×</div>
+          <p>Open competitions per year — Spring Send, Summer Slam, Annual Finals.</p>
+        </div>
+        <div class="comp-stat">
+          <div class="big-num orange">$1K+</div>
+          <p>In prizes &amp; pro-shop credit awarded each comp.</p>
+        </div>
+        <div class="comp-stat">
+          <div class="big-num coral">ALL</div>
+          <p>Skill levels welcome — Beginner, Intermediate, Open.</p>
+        </div>
+        <button class="btn-primary" data-open-book="class-beginner">Sign Up for the Next One</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- PARTIES -->
 <section class="parties" id="parties">
   <div class="container">
@@ -580,7 +663,9 @@
 
     <div class="goats">
       <article class="goat">
-        <div class="goat-portrait" style="--c1:#FF6B1A;--c2:#E13159"></div>
+        <div class="goat-portrait">
+          <img src="assets/img/02-slab.jpg" alt="Edwin Chow climbing the slab wall" loading="lazy" decoding="async" />
+        </div>
         <div class="goat-meta">
           <h3>Edwin Chow</h3>
           <p class="goat-role">Co-founder · Route Setter</p>
@@ -588,7 +673,9 @@
         </div>
       </article>
       <article class="goat">
-        <div class="goat-portrait" style="--c1:#5BA8E8;--c2:#D4E84A"></div>
+        <div class="goat-portrait">
+          <img src="assets/img/03-overhang.jpg" alt="Collin Jester pulling on the steep" loading="lazy" decoding="async" />
+        </div>
         <div class="goat-meta">
           <h3>Collin Jester</h3>
           <p class="goat-role">Co-founder · Operations</p>
@@ -596,7 +683,9 @@
         </div>
       </article>
       <article class="goat">
-        <div class="goat-portrait" style="--c1:#D4E84A;--c2:#FF6B1A"></div>
+        <div class="goat-portrait">
+          <img src="assets/img/06-spotting.jpg" alt="Ryan Perkins spotting a climber" loading="lazy" decoding="async" />
+        </div>
         <div class="goat-meta">
           <h3>Ryan Perkins</h3>
           <p class="goat-role">Co-founder · Community</p>
@@ -604,7 +693,9 @@
         </div>
       </article>
       <article class="goat">
-        <div class="goat-portrait" style="--c1:#E13159;--c2:#5BA8E8"></div>
+        <div class="goat-portrait">
+          <img src="assets/img/08-community.jpg" alt="The GOAT crew with members" loading="lazy" decoding="async" />
+        </div>
         <div class="goat-meta">
           <h3>The GOAT Crew</h3>
           <p class="goat-role">Ambassadors · Coaches · Setters</p>
@@ -620,6 +711,54 @@
       <div class="cs-text">
         <strong>Creator Space FW</strong> · Free monthly meetups for Fort Wayne creators. Ask the front desk how to plug in.
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>FROM THE FLOOR</span></div>
+    <h2 class="section-title">A scrapbook, basically.</h2>
+    <p class="lede">Action shots, comp nights, weird angles. Shot by members. Hover anything to read what's happening.</p>
+  </div>
+
+  <div class="gallery-rail">
+    <div class="g-card g-tall" data-cap="Steep wall, deep moves.">
+      <img src="assets/img/03-overhang.jpg" alt="Climber on the 40-degree overhang" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card" data-cap="V0 to V8 — fresh every two weeks.">
+      <img src="assets/img/12-route-set.jpg" alt="Freshly set route" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card g-wide" data-cap="Comp night. Every seat's a crash pad.">
+      <img src="assets/img/04-comp-crowd.jpg" alt="Crowd watching a finals climber" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card" data-cap="Beta sessions on the slab.">
+      <img src="assets/img/02-slab.jpg" alt="Slab wall problem" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card g-tall" data-cap="Spot first. Send second.">
+      <img src="assets/img/06-spotting.jpg" alt="Two climbers spotting on the wall" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card" data-cap="Crash pads doubling as couches.">
+      <img src="assets/img/09-crash-pads.jpg" alt="Members hanging on the pads" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card g-wide" data-cap="Buyout night, lights low.">
+      <img src="assets/img/10-event-night.jpg" alt="Event night at SCC" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card" data-cap="Chalk up. Send.">
+      <img src="assets/img/11-chalk-up.jpg" alt="Climber chalking up" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card g-tall" data-cap="Floor stays loud.">
+      <img src="assets/img/05-wall-action.jpg" alt="Wall full of climbers" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card" data-cap="Top out. Breathe.">
+      <img src="assets/img/01-bouldering.jpg" alt="Bouldering top-out" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card g-wide" data-cap="Community rules.">
+      <img src="assets/img/08-community.jpg" alt="SCC community" loading="lazy" decoding="async" />
+    </div>
+    <div class="g-card" data-cap="Flow.">
+      <img src="assets/img/07-flow.jpg" alt="Climbing flow state" loading="lazy" decoding="async" />
     </div>
   </div>
 </section>
@@ -775,22 +914,18 @@
   <div class="container">
     <div class="foot-top">
       <div class="foot-logo">
-        <svg viewBox="0 0 100 100" width="56" height="56" aria-hidden="true">
-          <rect width="100" height="100" fill="#FF6B1A" rx="14"/>
-          <path d="M18 78 L40 32 L56 56 L72 22 L86 78 Z" fill="#0F0E13" stroke="#0F0E13" stroke-width="3" stroke-linejoin="round"/>
-        </svg>
-        <div>
-          <div class="foot-brand">SUMMIT CITY<br/>CLIMBING CO.</div>
-          <div class="foot-tag">Fort Wayne's first bouldering gym.</div>
-        </div>
+        <img src="assets/logos/scc-horizontal-reversed.png" alt="Summit City Climbing Co." class="foot-logo-img" />
+        <div class="foot-tag">Fort Wayne's first bouldering gym.</div>
       </div>
       <div class="foot-links">
+        <a href="#tour">Tour</a>
         <a href="#story">Story</a>
-        <a href="#wall">The Wall</a>
         <a href="#pricing">Pricing</a>
         <a href="#programs">Programs</a>
+        <a href="#comps">Comps</a>
         <a href="#parties">Parties</a>
         <a href="#team">GOATs</a>
+        <a href="#gallery">Gallery</a>
         <a href="#visit">Visit</a>
       </div>
     </div>
