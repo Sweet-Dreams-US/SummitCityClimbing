@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Summit City Climbing Co. — Fort Wayne's first bouldering gym. Community, challenge, confidence. 1331 E Berry St." />
+<meta name="theme-color" content="#FF6B1A" />
+<meta property="og:title" content="Summit City Climbing Co." />
+<meta property="og:description" content="Fort Wayne's first bouldering gym. Send it with us." />
+<meta property="og:type" content="website" />
+<title>Summit City Climbing Co. — Send It.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FF6B1A' rx='20'/%3E%3Cpath d='M20 75 L40 35 L55 55 L70 25 L85 75 Z' fill='%230F0E13' stroke='%230F0E13' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Page loader: a route draws itself before reveal -->
+<div class="loader" id="loader">
+  <svg viewBox="0 0 200 200" class="loader-svg" aria-hidden="true">
+    <path id="loader-path" d="M30 170 Q 60 130, 50 100 T 90 50 Q 110 30, 140 60 T 170 30" fill="none" stroke="#FF6B1A" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="30" cy="170" r="9" fill="#D4E84A"/>
+    <circle cx="50" cy="100" r="9" fill="#5BA8E8"/>
+    <circle cx="90" cy="50" r="9" fill="#E13159"/>
+    <circle cx="140" cy="60" r="9" fill="#D4E84A"/>
+    <circle cx="170" cy="30" r="11" fill="#FF6B1A" stroke="#0F0E13" stroke-width="3"/>
+  </svg>
+  <div class="loader-text">SENDING IT...</div>
+</div>
+
+<!-- Custom chalk cursor -->
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+
+<!-- Topographical animated bg -->
+<svg class="topo-bg" viewBox="0 0 1440 900" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="topo-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF6B1A" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#5BA8E8" stop-opacity="0.04"/>
+    </linearGradient>
+  </defs>
+  <g stroke="currentColor" stroke-width="1" fill="none" opacity="0.35">
+    <path d="M-100,200 Q 200,150 400,250 T 800,180 T 1200,260 T 1600,200"/>
+    <path d="M-100,260 Q 200,210 400,310 T 800,240 T 1200,320 T 1600,260"/>
+    <path d="M-100,320 Q 200,270 400,370 T 800,300 T 1200,380 T 1600,320"/>
+    <path d="M-100,380 Q 200,330 400,430 T 800,360 T 1200,440 T 1600,380"/>
+    <path d="M-100,440 Q 200,390 400,490 T 800,420 T 1200,500 T 1600,440"/>
+    <path d="M-100,500 Q 200,450 400,550 T 800,480 T 1200,560 T 1600,500"/>
+    <path d="M-100,560 Q 200,510 400,610 T 800,540 T 1200,620 T 1600,560"/>
+    <path d="M-100,620 Q 200,570 400,670 T 800,600 T 1200,680 T 1600,620"/>
+    <path d="M-100,680 Q 200,630 400,730 T 800,660 T 1200,740 T 1600,680"/>
+    <path d="M-100,740 Q 200,690 400,790 T 800,720 T 1200,800 T 1600,740"/>
+  </g>
+</svg>
+
+<!-- Top status ticker -->
+<div class="ticker" role="banner">
+  <div class="ticker-track" id="ticker-track">
+    <span><b class="dot"></b> OPEN NOW · CLOSES 9PM</span><span>★</span>
+    <span>NEW ROUTES EVERY 2 WEEKS</span><span>★</span>
+    <span>DAY PASSES $17 · WEEKLY $20</span><span>★</span>
+    <span>FIRST TIME? GET A FREE INTRO</span><span>★</span>
+    <span>BUILT BY CLIMBERS · BACKED BY THE COMMUNITY</span><span>★</span>
+    <span>FORT WAYNE'S FIRST BOULDERING GYM</span><span>★</span>
+    <span><b class="dot"></b> OPEN NOW · CLOSES 9PM</span><span>★</span>
+    <span>NEW ROUTES EVERY 2 WEEKS</span><span>★</span>
+    <span>DAY PASSES $17 · WEEKLY $20</span><span>★</span>
+    <span>FIRST TIME? GET A FREE INTRO</span><span>★</span>
+    <span>BUILT BY CLIMBERS · BACKED BY THE COMMUNITY</span><span>★</span>
+    <span>FORT WAYNE'S FIRST BOULDERING GYM</span><span>★</span>
+  </div>
+</div>
+
+<!-- Nav -->
+<header class="nav">
+  <a href="#top" class="logo" aria-label="Summit City Climbing home">
+    <svg viewBox="0 0 100 100" width="40" height="40" aria-hidden="true">
+      <rect width="100" height="100" fill="#FF6B1A" rx="14"/>
+      <path d="M18 78 L40 32 L56 56 L72 22 L86 78 Z" fill="#0F0E13" stroke="#0F0E13" stroke-width="3" stroke-linejoin="round"/>
+    </svg>
+    <span>SUMMIT<br/>CITY</span>
+  </a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#story">Story</a>
+    <a href="#wall">The Wall</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#programs">Programs</a>
+    <a href="#parties">Parties</a>
+    <a href="#team">GOATs</a>
+    <a href="#visit">Visit</a>
+  </nav>
+  <button class="btn-book nav-cta" data-open-book="">
+    <span>BOOK A SESSION</span>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" id="nav-toggle">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grain" aria-hidden="true"></div>
+
+  <div class="hero-meta">
+    <div class="meta-row"><span class="tag">EST. 2024</span><span class="tag">FORT WAYNE, IN</span><span class="tag">2,130 SQFT</span></div>
+  </div>
+
+  <div class="hero-headline">
+    <h1>
+      <span class="word"><span class="char">S</span><span class="char">E</span><span class="char">N</span><span class="char">D</span></span>
+      <span class="word italic"><span class="char">I</span><span class="char">T</span><span class="char">.</span></span>
+    </h1>
+    <p class="kicker">Fort Wayne's first bouldering gym — built by climbers, kept weird by the community.</p>
+  </div>
+
+  <!-- Interactive climbing wall -->
+  <div class="wall" id="wall" aria-label="Interactive climbing wall — hover the holds">
+    <svg viewBox="0 0 600 700" class="wall-svg" preserveAspectRatio="xMidYMid meet">
+      <!-- Wall surface -->
+      <rect x="0" y="0" width="600" height="700" fill="url(#wall-grad)" rx="24"/>
+      <defs>
+        <linearGradient id="wall-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1c1820"/>
+          <stop offset="100%" stop-color="#0F0E13"/>
+        </linearGradient>
+        <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="#F5F0E5" opacity="0.08"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="600" height="700" fill="url(#dots)" rx="24"/>
+
+      <!-- Route line drawn between holds -->
+      <path id="route-line" d="M120,610 Q 200,520 180,440 T 280,300 T 240,180 T 380,90"
+            fill="none" stroke="#FF6B1A" stroke-width="4" stroke-dasharray="8 8" opacity="0.7"
+            stroke-linecap="round"/>
+
+      <!-- Holds. data-hold-color sets glow. -->
+      <g class="holds">
+        <g class="hold" data-hold="0" data-color="#D4E84A" tabindex="0">
+          <polygon points="120,610 145,605 155,630 130,640" fill="#D4E84A" stroke="#0F0E13" stroke-width="2"/>
+        </g>
+        <g class="hold" data-hold="1" data-color="#FF6B1A" tabindex="0">
+          <polygon points="180,440 215,430 220,470 185,475" fill="#FF6B1A" stroke="#0F0E13" stroke-width="2"/>
+        </g>
+        <g class="hold" data-hold="2" data-color="#5BA8E8" tabindex="0">
+          <circle cx="280" cy="300" r="22" fill="#5BA8E8" stroke="#0F0E13" stroke-width="2"/>
+        </g>
+        <g class="hold" data-hold="3" data-color="#E13159" tabindex="0">
+          <polygon points="240,180 270,170 280,205 245,215" fill="#E13159" stroke="#0F0E13" stroke-width="2"/>
+        </g>
+        <g class="hold" data-hold="4" data-color="#F5F0E5" tabindex="0">
+          <polygon points="380,90 415,75 425,110 395,125 375,110" fill="#F5F0E5" stroke="#0F0E13" stroke-width="2"/>
+        </g>
+        <!-- decorative holds -->
+        <circle cx="80" cy="500" r="12" fill="#5BA8E8" opacity="0.5"/>
+        <polygon points="450,500 470,495 475,520 455,525" fill="#D4E84A" opacity="0.5"/>
+        <circle cx="500" cy="350" r="10" fill="#E13159" opacity="0.5"/>
+        <polygon points="80,250 100,240 110,265 90,275" fill="#FF6B1A" opacity="0.5"/>
+        <circle cx="520" cy="180" r="8" fill="#F5F0E5" opacity="0.5"/>
+        <polygon points="460,250 480,235 495,255 475,275" fill="#5BA8E8" opacity="0.5"/>
+      </g>
+
+      <!-- top peak -->
+      <text x="385" y="55" fill="#F5F0E5" font-family="Archivo Black" font-size="22" text-anchor="middle">TOP ↑</text>
+    </svg>
+
+    <div class="wall-caption" id="wall-caption">
+      <span class="grade">V0 → V8</span>
+      <span class="hint">Tap a hold</span>
+    </div>
+  </div>
+
+  <div class="hero-ctas">
+    <button class="btn-primary" data-open-book="">
+      <span>BOOK A SESSION</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <a href="#story" class="btn-ghost">
+      <span>What's the deal?</span>
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num" data-count="2130">0</span><span class="stat-label">SQFT OF BOULDERING</span></div>
+    <div class="stat"><span class="stat-num" data-count="40">0</span><span class="stat-label">DEG OVERHANG</span></div>
+    <div class="stat"><span class="stat-num" data-count="14">0</span><span class="stat-label">DAYS PER NEW SET</span></div>
+    <div class="stat"><span class="stat-num" data-count="1">0</span><span class="stat-label">FIRST IN FW</span></div>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span>SCROLL</span>
+    <svg width="14" height="36" viewBox="0 0 14 36"><path d="M7 4 V 30 M2 24 L7 30 L12 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+  </div>
+</section>
+
+<!-- MISSION / 3 PILLARS -->
+<section class="mission" id="story">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>OUR REASON</span></div>
+    <h2 class="section-title">
+      We're not just a gym.<br/>
+      We're a <em>send</em> club.
+    </h2>
+    <p class="lede">Summit City Climbing Co. exists to create a welcoming space where climbing builds <strong>connection</strong>, <strong>confidence</strong>, and <strong>community impact</strong> — on and off the wall.</p>
+
+    <div class="pillars">
+      <article class="pillar pillar-orange">
+        <div class="pillar-num">01</div>
+        <h3>Community</h3>
+        <p>The Fort Wayne climbing scene started as a Facebook group of 550. Now it has a home. Strangers spot each other, beta gets shared, and the floor stays loud.</p>
+        <svg class="pillar-icon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="22" cy="26" r="9"/><circle cx="44" cy="26" r="9"/><path d="M8 56c0-9 6-14 14-14s14 5 14 14M30 56c0-9 6-14 14-14s14 5 14 14" stroke="currentColor" stroke-width="3" fill="none"/></svg>
+      </article>
+
+      <article class="pillar pillar-lime">
+        <div class="pillar-num">02</div>
+        <h3>Challenge</h3>
+        <p>USA Climbing certified setters from Chicago, Indy, and Ohio rotate routes every two weeks — V0 to V8 — so the wall is never the same gym twice.</p>
+        <svg class="pillar-icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M8 56 L24 16 L36 40 L48 12 L60 56 Z" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round"/></svg>
+      </article>
+
+      <article class="pillar pillar-coral">
+        <div class="pillar-num">03</div>
+        <h3>Confidence</h3>
+        <p>Bouldering is the doorway. No ropes, no harness — just you, the wall, and the next move. Beginners welcome. GOAT ambassadors on shift.</p>
+        <svg class="pillar-icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 8 L40 26 L60 28 L44 42 L48 60 L32 50 L16 60 L20 42 L4 28 L24 26 Z" fill="currentColor"/></svg>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ORIGIN STORY -->
+<section class="origin">
+  <div class="container origin-grid">
+    <div class="origin-text">
+      <div class="section-eyebrow"><span class="dash"></span><span>HOW IT STARTED</span></div>
+      <h2 class="section-title">Two friends. A two-hour drive. <br/><span class="hl-orange">One stupid good idea.</span></h2>
+      <div class="origin-body">
+        <p>Edwin Chow (Huntington U) and Collin Jester (IUPUI) discovered climbing in college. The catch — back in Fort Wayne, the closest gym was Indianapolis. Two hours each way. Multiple times a week.</p>
+        <p class="pull-quote">"Every single time we drove down, we're like, 'Dude, we need a climbing gym in Fort Wayne.' Building one was cheaper than the gas." <span class="quote-attr">— Edwin Chow, Co-founder</span></p>
+        <p>A 2019 attempt by another group fizzled out. Too big. Too expensive. So Edwin and Collin scrapped the multi-million dollar dream and built a small, scrappy proof. <strong>2,130 square feet. One wall. One community.</strong></p>
+        <p>Today, that proof is open. The route setters drive in from Chicago. The members drive in from Bluffton, Auburn, Decatur, Warsaw. The Facebook group is bigger than ever.</p>
+      </div>
+    </div>
+
+    <div class="origin-visual" aria-hidden="true">
+      <div class="map-card">
+        <div class="map-label">FORT WAYNE → INDIANAPOLIS</div>
+        <svg viewBox="0 0 320 320" class="map-svg">
+          <defs>
+            <pattern id="map-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+              <path d="M20 0 H0 V20" fill="none" stroke="#F5F0E5" stroke-width="0.5" opacity="0.15"/>
+            </pattern>
+          </defs>
+          <rect width="320" height="320" fill="#0F0E13"/>
+          <rect width="320" height="320" fill="url(#map-grid)"/>
+
+          <!-- The path -->
+          <path id="map-path" d="M70,70 Q 110,140 90,180 T 250,260" fill="none" stroke="#FF6B1A" stroke-width="3" stroke-dasharray="6 6"/>
+          <path d="M70,70 Q 110,140 90,180 T 250,260" fill="none" stroke="#FF6B1A" stroke-width="1" opacity="0.4"/>
+
+          <!-- FW pin -->
+          <g transform="translate(70, 70)">
+            <circle r="14" fill="#FF6B1A"/>
+            <circle r="20" fill="#FF6B1A" opacity="0.25"/>
+            <text x="22" y="6" fill="#F5F0E5" font-family="JetBrains Mono" font-size="11" font-weight="700">FW</text>
+            <text x="22" y="20" fill="#F5F0E5" font-family="JetBrains Mono" font-size="9" opacity="0.6">HOME</text>
+          </g>
+
+          <!-- Indy pin -->
+          <g transform="translate(250, 260)">
+            <circle r="10" fill="#5BA8E8"/>
+            <text x="-58" y="-6" fill="#F5F0E5" font-family="JetBrains Mono" font-size="11" font-weight="700">INDY</text>
+            <text x="-58" y="8" fill="#F5F0E5" font-family="JetBrains Mono" font-size="9" opacity="0.6">~2HR</text>
+          </g>
+
+          <!-- distance -->
+          <text x="160" y="160" fill="#D4E84A" font-family="Archivo Black" font-size="14" transform="rotate(28, 160, 160)">~120 MI / WK</text>
+        </svg>
+        <div class="map-caption">"Building a gym was cheaper than the gas."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE WALL / FACILITY -->
+<section class="wall-section" id="wall">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>THE FACILITY</span></div>
+    <h2 class="section-title">2,130 square feet of <span class="hl-lime">problems.</span></h2>
+
+    <div class="facility-grid">
+      <div class="fac-card fac-feature">
+        <div class="fac-num"><span>10–15</span><em>FT</em></div>
+        <h4>BOULDERING WALLS</h4>
+        <p>Top-out style walls in a chalked-out playground. New problems set V0 through V8 — nothing is permanent.</p>
+      </div>
+      <div class="fac-card">
+        <div class="fac-num"><span>24°</span><em>WALL</em></div>
+        <h4>THE SLAB-TO-VERT</h4>
+        <p>Where balance is everything. Footwork drills, technique grinds, friction projects.</p>
+      </div>
+      <div class="fac-card">
+        <div class="fac-num"><span>40°</span><em>OVERHANG</em></div>
+        <h4>THE STEEP</h4>
+        <p>Where forearms go to die — and grow. Power, dynos, and deep-cut crimps live here.</p>
+      </div>
+      <div class="fac-card fac-strength">
+        <div class="fac-icon">
+          <svg viewBox="0 0 80 40" aria-hidden="true"><rect x="0" y="14" width="8" height="12" fill="currentColor"/><rect x="8" y="8" width="6" height="24" fill="currentColor"/><rect x="14" y="18" width="52" height="4" fill="currentColor"/><rect x="66" y="8" width="6" height="24" fill="currentColor"/><rect x="72" y="14" width="8" height="12" fill="currentColor"/></svg>
+        </div>
+        <h4>STRENGTH GYM</h4>
+        <p>Hangboards, campus boards, free weights. Pull harder, climb harder.</p>
+      </div>
+      <div class="fac-card fac-shop">
+        <div class="fac-icon">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M14 24 H50 L46 56 H18 Z M22 24 V14 a10 10 0 0 1 20 0 V24" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round"/></svg>
+        </div>
+        <h4>PRO SHOP</h4>
+        <p>Shoes, chalk, brushes, swag. Members get 10% off everything.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>CLIMB WITH US</span></div>
+    <h2 class="section-title">Pick a plan. <span class="hl-orange">Send everything.</span></h2>
+
+    <div class="discount-toggle">
+      <button class="d-btn active" data-disc="standard">STANDARD</button>
+      <button class="d-btn" data-disc="hero">HERO PRICING</button>
+      <span class="disc-info">Hero pricing for students, teachers, military, nurses, first responders, social workers, and nonprofit leaders.</span>
+    </div>
+
+    <div class="plans">
+
+      <article class="plan">
+        <header class="plan-h">
+          <span class="plan-tag">DROP IN</span>
+          <h3>Day Pass</h3>
+        </header>
+        <div class="plan-price"><span class="dollar">$</span><span class="amount" data-std="17" data-hero="17">17</span><span class="per">/ day</span></div>
+        <ul class="plan-list">
+          <li>Unlimited climbing all day</li>
+          <li>Strength gym access</li>
+          <li>Use of crash pads</li>
+          <li>Kids 5 & under free w/ adult</li>
+        </ul>
+        <button class="plan-cta" data-open-book="day-pass">Book a Day</button>
+      </article>
+
+      <article class="plan">
+        <header class="plan-h">
+          <span class="plan-tag">SAMPLE PACK</span>
+          <h3>Weekly</h3>
+        </header>
+        <div class="plan-price"><span class="dollar">$</span><span class="amount" data-std="20" data-hero="20">20</span><span class="per">/ 7 days</span></div>
+        <ul class="plan-list">
+          <li>Best for visiting climbers</li>
+          <li>7 consecutive days</li>
+          <li>All-access</li>
+          <li>Try before you commit</li>
+        </ul>
+        <button class="plan-cta" data-open-book="weekly">Get a Week</button>
+      </article>
+
+      <article class="plan plan-feature">
+        <div class="plan-flag">MOST POPULAR</div>
+        <header class="plan-h">
+          <span class="plan-tag">THE GO-TO</span>
+          <h3>Monthly</h3>
+        </header>
+        <div class="plan-price"><span class="dollar">$</span><span class="amount" data-std="75" data-hero="55">75</span><span class="per">/ mo</span></div>
+        <ul class="plan-list">
+          <li>Unlimited access, all hours</li>
+          <li>Bring kids 5–13 for $30/mo each</li>
+          <li>10% pro shop discount</li>
+          <li>Member-only events</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <button class="plan-cta" data-open-book="monthly">Become a Member</button>
+      </article>
+
+      <article class="plan">
+        <header class="plan-h">
+          <span class="plan-tag">10 SESSIONS</span>
+          <h3>Punch Pass</h3>
+        </header>
+        <div class="plan-price"><span class="dollar">$</span><span class="amount" data-std="150" data-hero="150">150</span><span class="per">/ 10x</span></div>
+        <ul class="plan-list">
+          <li>10 day passes — save $20</li>
+          <li>No expiration</li>
+          <li>Shareable with friends</li>
+          <li>Great gift</li>
+        </ul>
+        <button class="plan-cta" data-open-book="punch-pass">Punch In</button>
+      </article>
+
+      <article class="plan">
+        <header class="plan-h">
+          <span class="plan-tag">ALL IN</span>
+          <h3>Annual</h3>
+        </header>
+        <div class="plan-price"><span class="dollar">$</span><span class="amount" data-std="750" data-hero="750">750</span><span class="per">/ yr</span></div>
+        <ul class="plan-list">
+          <li>Save $150 vs monthly</li>
+          <li>Everything in Monthly</li>
+          <li>Priority on events</li>
+          <li>Annual member meetup</li>
+        </ul>
+        <button class="plan-cta" data-open-book="annual">Lock It In</button>
+      </article>
+
+      <article class="plan plan-gift">
+        <header class="plan-h">
+          <span class="plan-tag">GIVE THE SEND</span>
+          <h3>Gift Card</h3>
+        </header>
+        <div class="plan-price"><span class="amount-text">YOUR<br/>AMOUNT</span></div>
+        <ul class="plan-list">
+          <li>Day pass + rental shoes combo</li>
+          <li>Any dollar amount</li>
+          <li>Digital or printed</li>
+          <li>Never expires</li>
+        </ul>
+        <button class="plan-cta" data-open-book="gift">Send a Gift</button>
+      </article>
+
+    </div>
+
+    <p class="pricing-fine">Add-ons: <strong>Rental Shoes $4</strong> · <strong>Chalk Bag $3</strong> · <strong>Belay/Top-rope coming with BASECAMP 2 →</strong></p>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section class="programs" id="programs">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>PROGRAMS & CLASSES</span></div>
+    <h2 class="section-title">There's a wall for <em>everyone.</em></h2>
+
+    <div class="prog-grid">
+
+      <article class="prog prog-1">
+        <div class="prog-day">M · W · F</div>
+        <h3>Beginner Bouldering 101</h3>
+        <p>The first time on a wall is the most fun. Two hours covering technique, falling, footwork, and language. Walk in nervous. Leave addicted.</p>
+        <button class="prog-cta" data-open-book="class-beginner">Reserve a Spot</button>
+      </article>
+
+      <article class="prog prog-2">
+        <div class="prog-day">SUNDAYS</div>
+        <h3>Women's Climb</h3>
+        <p>Women, femmes, and nonbinary climbers — a designated session built around encouragement and shared beta. Open to all skill levels.</p>
+        <button class="prog-cta" data-open-book="class-womens">Climb With Us</button>
+      </article>
+
+      <article class="prog prog-3">
+        <div class="prog-day">FRIDAYS</div>
+        <h3>Young Adult Climb</h3>
+        <p>20s and 30s, post-grads and pre-anything. Beginners through V5. Bouldering, hangouts, sometimes pizza, sometimes karaoke.</p>
+        <button class="prog-cta" data-open-book="class-yac">Join the YA</button>
+      </article>
+
+      <article class="prog prog-4">
+        <div class="prog-day">SUNDAYS</div>
+        <h3>College Climb</h3>
+        <p>Show your student ID. Discounted entry, free coffee, cold floor space, warm community. PFW, Trine, IPFW alumni — y'all are home.</p>
+        <button class="prog-cta" data-open-book="class-college">Get the Discount</button>
+      </article>
+
+      <article class="prog prog-5">
+        <div class="prog-day">TUESDAYS</div>
+        <h3>Homeschool Climb</h3>
+        <p>Daytime sessions for homeschool families — guided lessons, social time, and physical exercise that doesn't feel like physical exercise.</p>
+        <button class="prog-cta" data-open-book="class-homeschool">Bring the Kids</button>
+      </article>
+
+      <article class="prog prog-6">
+        <div class="prog-day">SATURDAYS</div>
+        <h3>Yoga on the Pads</h3>
+        <p>Pre-climb stretch or pure flow. Open to climbers and non-climbers alike. Mats provided. Pay what you can.</p>
+        <button class="prog-cta" data-open-book="class-yoga">Roll Out</button>
+      </article>
+
+      <article class="prog prog-7">
+        <div class="prog-day">THURSDAYS</div>
+        <h3>Run Club</h3>
+        <p>Yes, a climbing gym has a run club. Don't ask. Just come. Casual pace, post-run pull-ups optional.</p>
+        <button class="prog-cta" data-open-book="class-run">Lace Up</button>
+      </article>
+
+      <article class="prog prog-8">
+        <div class="prog-day">AGES 6–17</div>
+        <h3>Kids & Teens</h3>
+        <p>Weekly youth program. Climb-specific drills, games, and progression — coached by GOATs who actually like teaching.</p>
+        <button class="prog-cta" data-open-book="class-youth">Sign 'em Up</button>
+      </article>
+
+    </div>
+
+    <div class="prog-callout">
+      <div>
+        <h4>Don't see your thing?</h4>
+        <p>BASECAMP 2 is coming. New programs drop with every set. Get on the list — first access to events, workshops, and competitions.</p>
+      </div>
+      <a href="#newsletter" class="btn-ghost">Join the list →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PARTIES -->
+<section class="parties" id="parties">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>PRIVATE EVENTS</span></div>
+    <h2 class="section-title">Birthdays. Bachelorettes. Team-builds.<br/><span class="hl-coral">Send it together.</span></h2>
+
+    <div class="party-grid">
+      <article class="party">
+        <div class="party-icon">
+          <svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="50" r="20" stroke="currentColor" stroke-width="3" fill="none"/><path d="M30 32 L30 14 M50 32 L50 14 M40 28 L40 8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Birthday Parties</h3>
+        <p class="party-meta">From <strong>$200</strong> · 2 hrs · up to 12 climbers</p>
+        <ul>
+          <li>Private party room</li>
+          <li>Beginner instruction</li>
+          <li>Crash-pad seating</li>
+          <li>Bring your own cake</li>
+        </ul>
+        <button class="btn-primary small" data-open-book="party-birthday">Plan a Party</button>
+      </article>
+
+      <article class="party party-feature">
+        <div class="party-icon">
+          <svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="26" cy="32" r="10" stroke="currentColor" stroke-width="3" fill="none"/><circle cx="54" cy="32" r="10" stroke="currentColor" stroke-width="3" fill="none"/><path d="M10 64c0-10 8-16 16-16s16 6 16 16M38 64c0-10 8-16 16-16s16 6 16 16" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Group & Corporate</h3>
+        <p class="party-meta">Custom · 2–4 hrs · 10–60 climbers</p>
+        <ul>
+          <li>Team-building experience</li>
+          <li>Catering options</li>
+          <li>Beginner-friendly walls</li>
+          <li>After-hours availability</li>
+        </ul>
+        <button class="btn-primary small" data-open-book="party-corporate">Get a Quote</button>
+      </article>
+
+      <article class="party">
+        <div class="party-icon">
+          <svg viewBox="0 0 80 80" aria-hidden="true"><path d="M20 70 L20 30 L40 14 L60 30 L60 70 Z" stroke="currentColor" stroke-width="3" fill="none" stroke-linejoin="round"/><path d="M30 70 V 50 H 50 V 70" stroke="currentColor" stroke-width="3" fill="none"/></svg>
+        </div>
+        <h3>Buyout Nights</h3>
+        <p class="party-meta">From <strong>$500</strong> · 3 hrs · the whole gym</p>
+        <ul>
+          <li>Whole-facility rental</li>
+          <li>BYOB (21+)</li>
+          <li>DJ-ready space</li>
+          <li>Up to 50 guests</li>
+        </ul>
+        <button class="btn-primary small" data-open-book="party-buyout">Take Over</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM / GOATS -->
+<section class="team" id="team">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>MEET THE GOATs</span></div>
+    <h2 class="section-title">The crew is also <span class="hl-lime">the art.</span></h2>
+    <p class="lede">Most of our staff are part of <strong>Creator Space FW</strong> — Fort Wayne's collective of artists, makers, designers, and weirdos. Which is why the gym looks the way it does.</p>
+
+    <div class="goats">
+      <article class="goat">
+        <div class="goat-portrait" style="--c1:#FF6B1A;--c2:#E13159"></div>
+        <div class="goat-meta">
+          <h3>Edwin Chow</h3>
+          <p class="goat-role">Co-founder · Route Setter</p>
+          <p class="goat-bio">Drove 4 hrs round-trip to climb in Indy. Built this place so you wouldn't have to.</p>
+        </div>
+      </article>
+      <article class="goat">
+        <div class="goat-portrait" style="--c1:#5BA8E8;--c2:#D4E84A"></div>
+        <div class="goat-meta">
+          <h3>Collin Jester</h3>
+          <p class="goat-role">Co-founder · Operations</p>
+          <p class="goat-bio">Cuts checks. Sets routes. Sweeps floors. Runs the back-of-house.</p>
+        </div>
+      </article>
+      <article class="goat">
+        <div class="goat-portrait" style="--c1:#D4E84A;--c2:#FF6B1A"></div>
+        <div class="goat-meta">
+          <h3>Ryan Perkins</h3>
+          <p class="goat-role">Co-founder · Community</p>
+          <p class="goat-bio">The reason your first visit doesn't suck.</p>
+        </div>
+      </article>
+      <article class="goat">
+        <div class="goat-portrait" style="--c1:#E13159;--c2:#5BA8E8"></div>
+        <div class="goat-meta">
+          <h3>The GOAT Crew</h3>
+          <p class="goat-role">Ambassadors · Coaches · Setters</p>
+          <p class="goat-bio">Painters, illustrators, photographers, musicians — and yeah, climbers too.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="creator-space">
+      <div class="cs-badge">
+        <svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="28" fill="none" stroke="currentColor" stroke-width="2"/><text x="30" y="36" text-anchor="middle" font-family="Archivo Black" font-size="14" fill="currentColor">CS·FW</text></svg>
+      </div>
+      <div class="cs-text">
+        <strong>Creator Space FW</strong> · Free monthly meetups for Fort Wayne creators. Ask the front desk how to plug in.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY IMPACT -->
+<section class="impact">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>OFF THE WALL</span></div>
+    <h2 class="section-title">A climbing gym is just a <span class="hl-orange">community center</span> that vibrates.</h2>
+
+    <div class="impact-grid">
+      <div class="impact-stat">
+        <div class="big-num">$<span data-count="1">0</span>K+</div>
+        <p>Donated to local nonprofits via competitions and member meetups in our first year.</p>
+      </div>
+      <div class="impact-stat">
+        <div class="big-num"><span data-count="12">0</span>+</div>
+        <p>Local artists who've painted, printed, photographed, or scored events here.</p>
+      </div>
+      <div class="impact-stat">
+        <div class="big-num"><span data-count="550">0</span>+</div>
+        <p>Climbers in the Fort Wayne Rock Climbing Facebook group — and growing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section class="visit" id="visit">
+  <div class="container visit-grid">
+    <div class="visit-info">
+      <div class="section-eyebrow"><span class="dash"></span><span>FIND US</span></div>
+      <h2 class="section-title">1331 E Berry St.<br/><span class="hl-lime">The big orange door.</span></h2>
+
+      <div class="hours" id="hours">
+        <h4>HOURS</h4>
+        <ul>
+          <li><span>Monday</span><span>12 PM – 9 PM</span></li>
+          <li><span>Tuesday</span><span>12 PM – 9 PM</span></li>
+          <li><span>Wednesday</span><span>12 PM – 9 PM</span></li>
+          <li><span>Thursday</span><span>12 PM – 9 PM</span></li>
+          <li><span>Friday</span><span>12 PM – 9 PM</span></li>
+          <li><span>Saturday</span><span>10 AM – 6 PM</span></li>
+          <li><span>Sunday</span><span>1 PM – 6 PM</span></li>
+        </ul>
+        <div class="live-status" id="live-status"><span class="dot"></span><span id="live-status-text">Checking…</span></div>
+      </div>
+
+      <div class="contact">
+        <p><strong>1331 E Berry St</strong><br/>Fort Wayne, IN 46803</p>
+        <p>summitcityclimbingco@gmail.com</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/summitcityclimbingco/" target="_blank" rel="noopener">@summitcityclimbingco</a>
+          <a href="https://www.facebook.com/SummitCityClimbingCo/" target="_blank" rel="noopener">Facebook</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="visit-map">
+      <a href="https://www.google.com/maps/place/1331+E+Berry+St,+Fort+Wayne,+IN+46803" target="_blank" rel="noopener" class="map-link" aria-label="Open in Google Maps">
+        <svg viewBox="0 0 400 500" class="visit-svg" aria-hidden="true">
+          <rect width="400" height="500" fill="#13121A"/>
+          <g stroke="#F5F0E5" stroke-width="0.5" opacity="0.2">
+            <line x1="0" y1="100" x2="400" y2="100"/>
+            <line x1="0" y1="200" x2="400" y2="200"/>
+            <line x1="0" y1="300" x2="400" y2="300"/>
+            <line x1="0" y1="400" x2="400" y2="400"/>
+            <line x1="100" y1="0" x2="100" y2="500"/>
+            <line x1="200" y1="0" x2="200" y2="500"/>
+            <line x1="300" y1="0" x2="300" y2="500"/>
+          </g>
+          <!-- Streets -->
+          <path d="M0 250 L400 250" stroke="#FF6B1A" stroke-width="6" opacity="0.85"/>
+          <path d="M200 0 L200 500" stroke="#5BA8E8" stroke-width="3" opacity="0.7"/>
+          <path d="M0 380 L400 380" stroke="#5BA8E8" stroke-width="2" opacity="0.5"/>
+          <path d="M0 130 L400 130" stroke="#5BA8E8" stroke-width="2" opacity="0.5"/>
+          <text x="20" y="245" fill="#F5F0E5" font-family="JetBrains Mono" font-size="10">E BERRY ST →</text>
+
+          <!-- Pin -->
+          <g transform="translate(220, 260)" class="pin">
+            <circle r="38" fill="#FF6B1A" opacity="0.18"/>
+            <circle r="22" fill="#FF6B1A"/>
+            <circle r="22" fill="none" stroke="#0F0E13" stroke-width="3"/>
+            <text x="0" y="6" text-anchor="middle" fill="#0F0E13" font-family="Archivo Black" font-size="14">SCC</text>
+          </g>
+
+          <text x="200" y="470" text-anchor="middle" fill="#F5F0E5" font-family="JetBrains Mono" font-size="11" letter-spacing="2">CLICK FOR DIRECTIONS →</text>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="container">
+    <div class="section-eyebrow"><span class="dash"></span><span>QUESTIONS, PROBABLY</span></div>
+    <h2 class="section-title">FAQ — but make it real.</h2>
+
+    <div class="faq-list">
+      <details>
+        <summary>I've literally never climbed. Can I come?</summary>
+        <p>Absolutely. Most of our first-timers haven't either. Day pass + rental shoes is $21 total. Tell the front desk it's your first time and a GOAT will walk you through falling, the holds, and basic technique. About 30 minutes in, you'll be hooked.</p>
+      </details>
+      <details>
+        <summary>Do I need a partner / a belayer?</summary>
+        <p>Nope. Bouldering means no ropes, no harness — just walls under 15 ft with crash pads under you. Come solo, come with friends. (When BASECAMP 2 opens, we'll add top-rope.)</p>
+      </details>
+      <details>
+        <summary>What should I wear?</summary>
+        <p>Comfy clothes you can move in. Athletic shorts/leggings + a tee is perfect. Skip jewelry. We rent shoes for $4 — better than your sneakers.</p>
+      </details>
+      <details>
+        <summary>How young is too young?</summary>
+        <p>Kids 5 & under climb free with a paying adult. We have weekly youth programs for ages 6–17. Birthday party minimum is age 5.</p>
+      </details>
+      <details>
+        <summary>I'm a teacher / nurse / first responder / nonprofit lead. Discount?</summary>
+        <p>Yes. Hero pricing is $55/mo (vs $75) for students, teachers, military/veterans, nurses, first responders, social workers, and nonprofit leaders. Show ID at the desk.</p>
+      </details>
+      <details>
+        <summary>Do you sell day passes online?</summary>
+        <p>You can reserve here — payment happens at the front desk. Walk-ins always welcome too.</p>
+      </details>
+      <details>
+        <summary>What's BASECAMP 2?</summary>
+        <p>Our second location, in development. Top-rope, lead, and a way bigger footprint. Sign up for the newsletter to be first in line.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div class="container news-grid">
+    <div>
+      <h2 class="section-title big">WE SEND<br/><span class="strike">SICK</span> EMAILS.</h2>
+      <p class="lede">Event drops, set updates, secret hours, BASECAMP 2 access. No spam, ever.</p>
+    </div>
+    <form class="news-form" id="news-form">
+      <label class="visually-hidden" for="news-email">Email</label>
+      <input id="news-email" type="email" placeholder="you@send.it" required />
+      <button class="btn-primary" type="submit">Subscribe</button>
+      <span class="news-msg" id="news-msg" aria-live="polite"></span>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <div class="foot-top">
+      <div class="foot-logo">
+        <svg viewBox="0 0 100 100" width="56" height="56" aria-hidden="true">
+          <rect width="100" height="100" fill="#FF6B1A" rx="14"/>
+          <path d="M18 78 L40 32 L56 56 L72 22 L86 78 Z" fill="#0F0E13" stroke="#0F0E13" stroke-width="3" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="foot-brand">SUMMIT CITY<br/>CLIMBING CO.</div>
+          <div class="foot-tag">Fort Wayne's first bouldering gym.</div>
+        </div>
+      </div>
+      <div class="foot-links">
+        <a href="#story">Story</a>
+        <a href="#wall">The Wall</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#programs">Programs</a>
+        <a href="#parties">Parties</a>
+        <a href="#team">GOATs</a>
+        <a href="#visit">Visit</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© <span id="year">2026</span> Summit City Climbing Co. — Sent with love by <a href="https://creatorspace.fw" target="_blank" rel="noopener">Creator Space FW</a>.</div>
+      <div class="foot-easter">try the konami: ↑↑↓↓←→←→BA</div>
+    </div>
+  </div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-shade" id="modal-shade" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div class="modal" role="document">
+    <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+
+    <div class="modal-progress" id="modal-progress">
+      <span class="dot active" data-step="1"></span>
+      <span class="dot" data-step="2"></span>
+      <span class="dot" data-step="3"></span>
+      <span class="dot" data-step="4"></span>
+    </div>
+
+    <!-- Step 1: pick experience -->
+    <div class="step active" data-step="1">
+      <h2 id="modal-title">What are you sending?</h2>
+      <p class="step-sub">Pick the experience and we'll figure the rest out together.</p>
+      <div class="exp-grid">
+        <button class="exp-card" data-exp="day-pass" data-label="Day Pass — $17"><span>🧗</span><strong>Day Pass</strong><em>$17 / day</em></button>
+        <button class="exp-card" data-exp="weekly" data-label="Weekly Pass — $20"><span>📅</span><strong>Weekly Pass</strong><em>$20 / 7 days</em></button>
+        <button class="exp-card" data-exp="monthly" data-label="Monthly Membership — $75"><span>♾️</span><strong>Monthly</strong><em>$75 / mo</em></button>
+        <button class="exp-card" data-exp="punch-pass" data-label="10-Punch Pass — $150"><span>🎟️</span><strong>Punch Pass</strong><em>$150 / 10x</em></button>
+        <button class="exp-card" data-exp="annual" data-label="Annual — $750"><span>📈</span><strong>Annual</strong><em>$750 / yr</em></button>
+        <button class="exp-card" data-exp="gift" data-label="Gift Card"><span>🎁</span><strong>Gift Card</strong><em>any amount</em></button>
+        <button class="exp-card" data-exp="class-beginner" data-label="Beginner Class"><span>📚</span><strong>Beginner Class</strong><em>M / W / F</em></button>
+        <button class="exp-card" data-exp="party-birthday" data-label="Birthday Party"><span>🎂</span><strong>Birthday Party</strong><em>from $200</em></button>
+        <button class="exp-card" data-exp="party-corporate" data-label="Group / Corporate"><span>👥</span><strong>Group / Corporate</strong><em>custom</em></button>
+        <button class="exp-card" data-exp="party-buyout" data-label="Buyout Night"><span>🌃</span><strong>Buyout Night</strong><em>from $500</em></button>
+      </div>
+    </div>
+
+    <!-- Step 2: date / time -->
+    <div class="step" data-step="2">
+      <h2>When?</h2>
+      <p class="step-sub">Pick a day and time. We'll confirm by email.</p>
+      <label class="field">
+        <span>Date</span>
+        <input type="date" id="book-date" required />
+      </label>
+      <label class="field">
+        <span>Time</span>
+        <select id="book-time" required>
+          <option value="">Pick a time</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>How many people?</span>
+        <input type="number" id="book-people" min="1" max="60" value="1" required />
+      </label>
+    </div>
+
+    <!-- Step 3: contact -->
+    <div class="step" data-step="3">
+      <h2>Who do we email?</h2>
+      <p class="step-sub">Don't worry — we send sick emails, never spam.</p>
+      <label class="field">
+        <span>Your name</span>
+        <input type="text" id="book-name" required />
+      </label>
+      <label class="field">
+        <span>Email</span>
+        <input type="email" id="book-email" required />
+      </label>
+      <label class="field">
+        <span>Phone (optional)</span>
+        <input type="tel" id="book-phone" />
+      </label>
+      <label class="field">
+        <span>Anything else?</span>
+        <textarea id="book-notes" rows="3" placeholder="First time? Special request? Tell us."></textarea>
+      </label>
+    </div>
+
+    <!-- Step 4: confirm -->
+    <div class="step" data-step="4">
+      <h2>Sending it.</h2>
+      <p class="step-sub">Review, then hit SEND IT.</p>
+      <div class="confirm" id="confirm-summary">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <div class="modal-cta-row">
+      <button class="btn-ghost" id="step-back" disabled>Back</button>
+      <button class="btn-primary" id="step-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING CONFIRMATION -->
+<div class="modal-shade" id="confirmed-shade" role="dialog" aria-modal="true" hidden>
+  <div class="modal modal-confirmed">
+    <div class="stamp">SENT IT.</div>
+    <h2>You're on the wall.</h2>
+    <p>We got your request — check your inbox in the next few hours for confirmation. If you didn't get one, email us at <a href="mailto:summitcityclimbingco@gmail.com">summitcityclimbingco@gmail.com</a>.</p>
+    <p class="confirmed-summary" id="confirmed-summary"></p>
+    <button class="btn-primary" id="confirmed-close">Close</button>
+  </div>
+</div>
+
+<!-- Konami easter egg -->
+<div class="konami" id="konami" hidden>
+  <div class="konami-msg">FREE DAY PASS UNLOCKED — say "konami sent" at the front desk 🤘</div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
