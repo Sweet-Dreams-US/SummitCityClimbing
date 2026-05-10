@@ -923,7 +923,10 @@
     </div>
     <div class="foot-bottom">
       <div>© <span id="year">2026</span> Summit City Climbing Co. — Built by climbers. Backed by the community.</div>
-      <div class="foot-easter">try the konami: ↑↑↓↓←→←→BA</div>
+      <div class="foot-meta">
+        <a href="admin.html" class="foot-admin">Staff Admin →</a>
+        <span class="foot-easter">try the konami: ↑↑↓↓←→←→BA</span>
+      </div>
     </div>
   </div>
 </footer>
@@ -938,6 +941,7 @@
       <span class="dot" data-step="2"></span>
       <span class="dot" data-step="3"></span>
       <span class="dot" data-step="4"></span>
+      <span class="dot" data-step="5"></span>
     </div>
 
     <!-- Step 1: pick experience -->
@@ -1000,13 +1004,46 @@
       </label>
     </div>
 
-    <!-- Step 4: confirm -->
+    <!-- Step 4: review -->
     <div class="step" data-step="4">
       <h2>Sending it.</h2>
-      <p class="step-sub">Review, then hit SEND IT.</p>
+      <p class="step-sub">Review your order. Next stop: payment.</p>
       <div class="confirm" id="confirm-summary">
         <!-- filled by JS -->
       </div>
+      <div class="order-total" id="order-total-1">
+        <span>Order total</span>
+        <strong id="total-amount-1">$0.00</strong>
+      </div>
+    </div>
+
+    <!-- Step 5: payment -->
+    <div class="step" data-step="5">
+      <h2>Pay & send.</h2>
+      <p class="step-sub">Demo checkout — no card is charged. Use any 4242-style number to test.</p>
+      <label class="field">
+        <span>Card number</span>
+        <input type="text" id="book-card" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="19" />
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Expiry</span>
+          <input type="text" id="book-cardexp" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" />
+        </label>
+        <label class="field">
+          <span>CVC</span>
+          <input type="text" id="book-cardcvc" placeholder="123" maxlength="4" autocomplete="cc-csc" />
+        </label>
+        <label class="field">
+          <span>ZIP</span>
+          <input type="text" id="book-cardzip" placeholder="46803" maxlength="10" autocomplete="postal-code" />
+        </label>
+      </div>
+      <div class="order-total final" id="order-total-2">
+        <span>Charge today</span>
+        <strong id="total-amount-2">$0.00</strong>
+      </div>
+      <p class="payment-note">🔒 Payments processed securely. <a href="#" tabindex="-1">Terms</a> · <a href="#" tabindex="-1">Refund policy</a></p>
     </div>
 
     <div class="modal-cta-row">

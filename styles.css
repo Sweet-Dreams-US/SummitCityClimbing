@@ -1801,6 +1801,24 @@ section + section { padding-top: clamp(80px, 12vw, 140px); }
 }
 .foot-easter { color: var(--orange); opacity: 0.6; }
 .foot-bottom a { color: var(--orange); }
+.foot-meta {
+  display: flex; align-items: center; gap: 16px;
+}
+.foot-admin {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--chalk-dim) !important;
+  padding: 4px 10px;
+  border: 1px solid rgba(245, 240, 229, 0.15);
+  border-radius: 999px;
+  transition: all var(--t-fast);
+}
+.foot-admin:hover {
+  color: var(--bg) !important;
+  background: var(--lime);
+  border-color: var(--lime);
+}
 
 /* ============================================================
    MODAL
@@ -1969,6 +1987,48 @@ section + section { padding-top: clamp(80px, 12vw, 140px); }
 .modal-cta-row {
   display: flex; justify-content: space-between; gap: 12px;
   margin-top: 16px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.order-total {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 14px 18px;
+  background: var(--bg-3);
+  border: 2px dashed rgba(245, 240, 229, 0.15);
+  border-radius: 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--chalk-dim);
+  margin-top: 8px;
+}
+.order-total strong {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--chalk);
+  letter-spacing: 0;
+}
+.order-total.final {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--bg);
+}
+.order-total.final strong { color: var(--bg); }
+.payment-note {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--chalk-dim);
+  margin: 12px 0 0;
+}
+.payment-note a { color: var(--orange); }
+@media (max-width: 500px) {
+  .field-row { grid-template-columns: 1fr 1fr; }
+  .field-row .field:first-child { grid-column: span 2; }
 }
 
 .modal-confirmed {

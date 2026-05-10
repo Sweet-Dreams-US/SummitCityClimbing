@@ -227,7 +227,44 @@
   const expCards = document.querySelectorAll('.exp-card');
 
   let currentStep = 1;
-  let booking = { exp: null, expLabel: null, date: null, time: null, people: 1, name: '', email: '', phone: '', notes: '' };
+  let booking = { exp: null, expLabel: null, date: null, time: null, people: 1, name: '', email: '', phone: '', notes: '', total: 0 };
+
+  // Price table — single source of truth. Admin can override via localStorage.
+  const DEFAULT_PRICES = {
+    'day-pass':       { unit: 17,  per: 'person', label: 'Day Pass' },
+    'weekly':         { unit: 20,  per: 'person', label: 'Weekly Pass' },
+    'monthly':        { unit: 75,  per: 'person', label: 'Monthly Membership' },
+    'punch-pass':     { unit: 150, per: 'order',  label: '10-Punch Pass' },
+    'annual':         { unit: 750, per: 'person', label: 'Annual Membership' },
+    'gift':           { unit: 50,  per: 'order',  label: 'Gift Card' },
+    'class-beginner': { unit: 25,  per: 'person', label: 'Beginner Class' },
+    'class-womens':   { unit: 17,  per: 'person', label: "Women's Climb (day pass)" },
+    'class-yac':      { unit: 17,  per: 'person', label: 'Young Adult Climb' },
+    'class-college':  { unit: 12,  per: 'person', label: 'College Climb' },
+    'class-homeschool':{unit: 17,  per: 'person', label: 'Homeschool Climb' },
+    'class-yoga':     { unit: 12,  per: 'person', label: 'Yoga' },
+    'class-run':      { unit: 0,   per: 'order',  label: 'Run Club (free)' },
+    'class-youth':    { unit: 30,  per: 'person', label: 'Youth Program' },
+    'party-birthday': { unit: 200, per: 'order',  label: 'Birthday Party' },
+    'party-corporate':{ unit: 350, per: 'order',  label: 'Group / Corporate' },
+    'party-buyout':   { unit: 500, per: 'order',  label: 'Buyout Night' },
+  };
+  function getPrices() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('scc-prices') || 'null');
+      return stored ? { ...DEFAULT_PRICES, ...stored } : DEFAULT_PRICES;
+    } catch (e) { return DEFAULT_PRICES; }
+  }
+  function calcTotal() {
+    const p = getPrices()[booking.exp];
+    if (!p) return 0;
+    const qty = p.per === 'person' ? Math.max(1, booking.people || 1) : 1;
+    booking.total = p.unit * qty;
+    return booking.total;
+  }
+  function fmtMoney(n) {
+    return '$' + (n || 0).toFixed(2).replace(/\.00$/, '');
+  }
 
   function openModal(preset) {
     shade.hidden = false;
@@ -277,8 +314,18 @@
       d.classList.toggle('complete', i + 1 < n);
     });
     stepBack.disabled = n === 1;
-    stepNext.textContent = n === 4 ? 'SEND IT! 🚀' : n === 3 ? 'Review →' : 'Next →';
+    if (n === 5)      stepNext.textContent = 'PAY & SEND IT 🚀';
+    else if (n === 4) stepNext.textContent = 'Pay →';
+    else if (n === 3) stepNext.textContent = 'Review →';
+    else              stepNext.textContent = 'Next →';
     if (n === 4) populateConfirm();
+    if (n === 4 || n === 5) {
+      const t = fmtMoney(calcTotal());
+      const a1 = document.getElementById('total-amount-1');
+      const a2 = document.getElementById('total-amount-2');
+      if (a1) a1.textContent = t;
+      if (a2) a2.textContent = t;
+    }
   }
 
   stepBack?.addEventListener('click', () => { if (currentStep > 1) setStep(currentStep - 1); });
@@ -304,6 +351,17 @@
       booking.name = name; booking.email = email; booking.phone = phone; booking.notes = notes;
       setStep(4);
     } else if (currentStep === 4) {
+      setStep(5);
+    } else if (currentStep === 5) {
+      // Validate payment fields
+      const card = document.getElementById('book-card').value.replace(/\s/g, '');
+      const exp  = document.getElementById('book-cardexp').value.trim();
+      const cvc  = document.getElementById('book-cardcvc').value.trim();
+      const zip  = document.getElementById('book-cardzip').value.trim();
+      if (booking.total > 0 && (!card || card.length < 12 || !exp || !cvc || !zip)) {
+        shake(stepNext); return;
+      }
+      booking.cardLast4 = card.slice(-4) || '0000';
       submitBooking();
     }
   });
@@ -367,16 +425,30 @@
   }
 
   function submitBooking() {
+    const order = {
+      id: 'SCC-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(Math.random() * 999),
+      ...booking,
+      status: 'paid',
+      ts: Date.now(),
+    };
     try {
       const stored = JSON.parse(localStorage.getItem('scc-bookings') || '[]');
-      stored.push({ ...booking, ts: Date.now() });
+      stored.push(order);
       localStorage.setItem('scc-bookings', JSON.stringify(stored));
     } catch (e) { /* ignore */ }
 
     closeModal();
     const confirmed = document.getElementById('confirmed-shade');
     const summary = document.getElementById('confirmed-summary');
-    summary.textContent = `${booking.expLabel} · ${booking.date} @ ${booking.time} · party of ${booking.people}`;
+    const total = fmtMoney(booking.total);
+    const summaryParts = [
+      booking.expLabel,
+      booking.date + ' @ ' + booking.time,
+      'party of ' + booking.people,
+      total,
+    ];
+    if (booking.cardLast4 && booking.total > 0) summaryParts.push('card ••••' + booking.cardLast4);
+    summary.textContent = summaryParts.join(' · ') + ' · order ' + order.id;
     confirmed.hidden = false;
     requestAnimationFrame(() => confirmed.classList.add('open'));
     document.body.style.overflow = 'hidden';
@@ -390,13 +462,24 @@
   });
 
   function resetBooking() {
-    booking = { exp: null, expLabel: null, date: null, time: null, people: 1, name: '', email: '', phone: '', notes: '' };
+    booking = { exp: null, expLabel: null, date: null, time: null, people: 1, name: '', email: '', phone: '', notes: '', total: 0 };
     expCards.forEach(c => c.classList.remove('selected'));
-    ['book-date','book-time','book-people','book-name','book-email','book-phone','book-notes'].forEach(id => {
+    ['book-date','book-time','book-people','book-name','book-email','book-phone','book-notes',
+     'book-card','book-cardexp','book-cardcvc','book-cardzip'].forEach(id => {
       const el = document.getElementById(id); if (el) el.value = id === 'book-people' ? '1' : '';
     });
     setStep(1);
   }
+
+  // Card-number formatter: groups of 4
+  document.getElementById('book-card')?.addEventListener('input', e => {
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 19);
+    e.target.value = digits.replace(/(\d{4})/g, '$1 ').trim();
+  });
+  document.getElementById('book-cardexp')?.addEventListener('input', e => {
+    const d = e.target.value.replace(/\D/g, '').slice(0, 4);
+    e.target.value = d.length > 2 ? d.slice(0,2) + '/' + d.slice(2) : d;
+  });
 
   function shake(el) {
     el.style.animation = 'none';

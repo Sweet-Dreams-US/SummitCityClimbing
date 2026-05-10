@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>SCC · Admin</title>
+<link rel="icon" type="image/png" href="assets/logos/scc-icon-fullcolor.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+
+<aside class="sidebar" aria-label="Admin navigation">
+  <a href="index.html" class="sb-brand" title="Back to public site">
+    <img src="assets/logos/scc-horizontal-reversed.png" alt="Summit City Climbing" />
+  </a>
+  <div class="sb-section-label">Admin · Demo</div>
+  <nav class="sb-nav" role="tablist" aria-label="Admin tabs">
+    <button role="tab" class="sb-link active" data-tab="dashboard">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12L12 4l9 8M5 10v10h4v-6h6v6h4V10" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="orders">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Orders</span><span class="sb-badge" id="badge-orders">0</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="analytics">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V8M10 20V12M16 20V4M22 20H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      <span>Analytics</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="accounting">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 6v12M9 9h6M9 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Accounting</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="events">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M3 9h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Events</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="pricing">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13L13 20a2 2 0 01-3 0L4 14a2 2 0 010-3l7-7h8v8z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/><circle cx="15.5" cy="8.5" r="1.5" fill="currentColor"/></svg>
+      <span>Pricing</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="members">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="9" r="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M3 21c0-4 3-6 6-6s6 2 6 6M16 11a3 3 0 100-6M21 21c0-3-2-5-5-5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <span>Members</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="routes">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c2-3 1-5 4-7s4-2 6-5 4-3 4-3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="5" cy="19" r="2" fill="currentColor"/><circle cx="11" cy="13" r="2" fill="currentColor"/><circle cx="17" cy="8" r="2" fill="currentColor"/><circle cx="20" cy="4" r="2" fill="currentColor"/></svg>
+      <span>Routes</span>
+    </button>
+    <button role="tab" class="sb-link" data-tab="settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 01-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 01-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 012.8-2.8l.1.1a1.7 1.7 0 001.8.3h0a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5h0a1.7 1.7 0 001.8-.3l.1-.1a2 2 0 012.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8v0a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+  <div class="sb-foot">
+    <button class="sb-link warn" id="seed-reset" title="Reseed demo data">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 0115-6.7L21 8M21 3v5h-5M21 12a9 9 0 01-15 6.7L3 16M3 21v-5h5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Reseed Demo</span>
+    </button>
+  </div>
+</aside>
+
+<main class="content">
+  <header class="topbar">
+    <div class="topbar-l">
+      <button class="topbar-burger" id="burger" aria-label="Open sidebar"><span></span><span></span><span></span></button>
+      <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+    </div>
+    <div class="topbar-r">
+      <span class="status-pill"><span class="dot"></span> Demo Mode</span>
+      <span class="topbar-date" id="topbar-date">—</span>
+      <a href="index.html" class="topbar-cta" target="_blank" rel="noopener">View Site ↗</a>
+    </div>
+  </header>
+
+  <!-- DASHBOARD ---------------------------------------------------- -->
+  <section class="tab active" data-panel="dashboard" role="tabpanel">
+    <div class="kpis">
+      <article class="kpi">
+        <div class="kpi-label">REVENUE TODAY</div>
+        <div class="kpi-value" id="k-rev-today">$0</div>
+        <div class="kpi-delta up" id="k-rev-today-d">— vs. yesterday</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">REVENUE THIS WEEK</div>
+        <div class="kpi-value" id="k-rev-week">$0</div>
+        <div class="kpi-delta" id="k-rev-week-d">—</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">REVENUE THIS MONTH</div>
+        <div class="kpi-value" id="k-rev-month">$0</div>
+        <div class="kpi-delta" id="k-rev-month-d">—</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">ORDERS TODAY</div>
+        <div class="kpi-value" id="k-orders-today">0</div>
+        <div class="kpi-delta" id="k-orders-today-d">—</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">ACTIVE MEMBERS</div>
+        <div class="kpi-value" id="k-members">0</div>
+        <div class="kpi-delta up">+ MTD</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">DAY PASSES (7D)</div>
+        <div class="kpi-value" id="k-passes-week">0</div>
+        <div class="kpi-delta" id="k-passes-week-d">—</div>
+      </article>
+    </div>
+
+    <div class="dash-grid">
+      <article class="card">
+        <header class="card-h"><h3>Last 14 days</h3><span class="card-sub">Revenue</span></header>
+        <svg id="chart-revenue" viewBox="0 0 600 200" preserveAspectRatio="none" class="chart"></svg>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Recent Orders</h3><a class="card-link" data-jump="orders">All orders →</a></header>
+        <ul class="list-feed" id="recent-orders"></ul>
+      </article>
+      <article class="card card-wide">
+        <header class="card-h"><h3>Today's Schedule</h3><span class="card-sub" id="today-date"></span></header>
+        <ul class="schedule" id="today-schedule"></ul>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Top Plans (30d)</h3></header>
+        <ol class="rank-list" id="top-plans"></ol>
+      </article>
+    </div>
+  </section>
+
+  <!-- ORDERS ------------------------------------------------------- -->
+  <section class="tab" data-panel="orders" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Orders</h2>
+        <p class="tab-sub">All transactions, real and seeded. Refunds, exports, and search.</p>
+      </div>
+      <div class="tab-controls">
+        <input type="search" id="orders-search" placeholder="Search by name, email, ID…" />
+        <select id="orders-filter">
+          <option value="">All status</option>
+          <option value="paid">Paid</option>
+          <option value="refunded">Refunded</option>
+        </select>
+        <button class="btn-prim" id="orders-export">Export CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="table" id="orders-table">
+        <thead>
+          <tr>
+            <th data-sort="ts">Date</th>
+            <th data-sort="id">Order #</th>
+            <th data-sort="name">Customer</th>
+            <th data-sort="exp">Type</th>
+            <th data-sort="people">Qty</th>
+            <th data-sort="total" class="num">Total</th>
+            <th data-sort="status">Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="orders-body"></tbody>
+      </table>
+      <div class="empty" id="orders-empty" hidden>
+        <p>No orders match.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANALYTICS ---------------------------------------------------- -->
+  <section class="tab" data-panel="analytics" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Analytics</h2>
+        <p class="tab-sub">Where the gym lives and dies.</p>
+      </div>
+      <div class="tab-controls">
+        <select id="analytics-range">
+          <option value="7">Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30" selected>Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <article class="card card-wide">
+        <header class="card-h"><h3>Revenue by Day</h3></header>
+        <svg id="chart-revenue-big" viewBox="0 0 800 240" preserveAspectRatio="none" class="chart big"></svg>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Revenue by Plan</h3></header>
+        <ul class="bar-list" id="revenue-by-plan"></ul>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Busiest Hours</h3></header>
+        <div class="hours-heatmap" id="hours-heatmap"></div>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Repeat vs. New (30d)</h3></header>
+        <div class="donut" id="repeat-donut"></div>
+        <ul class="legend" id="repeat-legend"></ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- ACCOUNTING --------------------------------------------------- -->
+  <section class="tab" data-panel="accounting" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Accounting</h2>
+        <p class="tab-sub">Month P&amp;L. Drop expenses in. Receipts upload coming soon.</p>
+      </div>
+      <div class="tab-controls">
+        <select id="acct-month"></select>
+      </div>
+    </div>
+    <div class="pnl-grid">
+      <article class="pnl-card revenue">
+        <div class="pnl-label">REVENUE</div>
+        <div class="pnl-value" id="pnl-rev">$0</div>
+        <div class="pnl-foot" id="pnl-rev-orders">— orders</div>
+      </article>
+      <article class="pnl-card expenses">
+        <div class="pnl-label">EXPENSES</div>
+        <div class="pnl-value" id="pnl-exp">$0</div>
+        <div class="pnl-foot" id="pnl-exp-count">— line items</div>
+      </article>
+      <article class="pnl-card net">
+        <div class="pnl-label">NET</div>
+        <div class="pnl-value" id="pnl-net">$0</div>
+        <div class="pnl-foot" id="pnl-margin">—% margin</div>
+      </article>
+    </div>
+
+    <div class="dash-grid">
+      <article class="card card-wide">
+        <header class="card-h"><h3>Expenses</h3></header>
+        <table class="table sm" id="expenses-table">
+          <thead>
+            <tr><th>Date</th><th>Category</th><th>Vendor</th><th class="num">Amount</th><th></th></tr>
+          </thead>
+          <tbody id="expenses-body"></tbody>
+        </table>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Add Expense</h3></header>
+        <form class="form-stack" id="add-expense-form">
+          <label>Date <input type="date" id="exp-date" required /></label>
+          <label>Category
+            <select id="exp-cat" required>
+              <option value="">—</option>
+              <option>Rent</option>
+              <option>Utilities</option>
+              <option>Route Setting</option>
+              <option>Equipment</option>
+              <option>Marketing</option>
+              <option>Insurance</option>
+              <option>Wages</option>
+              <option>Pro Shop COGS</option>
+              <option>Software</option>
+              <option>Misc</option>
+            </select>
+          </label>
+          <label>Vendor <input type="text" id="exp-vendor" placeholder="e.g. So Ill" required /></label>
+          <label>Amount <input type="number" id="exp-amount" step="0.01" min="0" required /></label>
+          <button class="btn-prim" type="submit">Add expense</button>
+        </form>
+      </article>
+    </div>
+  </section>
+
+  <!-- EVENTS ------------------------------------------------------- -->
+  <section class="tab" data-panel="events" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Events &amp; Programs</h2>
+        <p class="tab-sub">What's on the calendar. Drag to reorder, click to edit.</p>
+      </div>
+      <div class="tab-controls">
+        <button class="btn-prim" id="add-event">+ New Event</button>
+      </div>
+    </div>
+    <div class="event-grid" id="events-grid"></div>
+  </section>
+
+  <!-- PRICING ------------------------------------------------------ -->
+  <section class="tab" data-panel="pricing" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Pricing &amp; Plans</h2>
+        <p class="tab-sub">Edit a price → it instantly updates the public booking modal.</p>
+      </div>
+      <div class="tab-controls">
+        <button class="btn-ghost" id="prices-reset">Reset to defaults</button>
+      </div>
+    </div>
+    <div class="prices-list" id="prices-list"></div>
+  </section>
+
+  <!-- MEMBERS ------------------------------------------------------ -->
+  <section class="tab" data-panel="members" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Members</h2>
+        <p class="tab-sub">Active monthly + annual passholders. Click for full record.</p>
+      </div>
+      <div class="tab-controls">
+        <input type="search" id="members-search" placeholder="Search…" />
+        <select id="members-filter">
+          <option value="">All</option>
+          <option value="monthly">Monthly</option>
+          <option value="annual">Annual</option>
+          <option value="hero">Hero pricing</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="table" id="members-table">
+        <thead>
+          <tr><th>Name</th><th>Plan</th><th>Joined</th><th>Last Visit</th><th class="num">Visits MTD</th><th>Status</th></tr>
+        </thead>
+        <tbody id="members-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ROUTES ------------------------------------------------------- -->
+  <section class="tab" data-panel="routes" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Route Setting</h2>
+        <p class="tab-sub">Walls + last set date. New problems land every 14 days.</p>
+      </div>
+      <div class="tab-controls">
+        <button class="btn-prim" id="mark-set-today">Mark next-due as set today</button>
+      </div>
+    </div>
+    <div class="walls-grid" id="walls-grid"></div>
+  </section>
+
+  <!-- SETTINGS ----------------------------------------------------- -->
+  <section class="tab" data-panel="settings" role="tabpanel">
+    <div class="tab-head">
+      <div>
+        <h2>Settings</h2>
+        <p class="tab-sub">Business info, hours, alerts.</p>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <article class="card card-wide">
+        <header class="card-h"><h3>Business Info</h3></header>
+        <form class="form-stack" id="settings-form">
+          <label>Business Name <input type="text" id="s-name" /></label>
+          <label>Address <input type="text" id="s-address" /></label>
+          <label>Email <input type="email" id="s-email" /></label>
+          <label>Phone <input type="tel" id="s-phone" /></label>
+          <button class="btn-prim" type="submit">Save</button>
+        </form>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Hours</h3></header>
+        <ul class="hours-list">
+          <li><span>Mon–Fri</span><span>12 PM – 9 PM</span></li>
+          <li><span>Saturday</span><span>10 AM – 6 PM</span></li>
+          <li><span>Sunday</span><span>1 PM – 6 PM</span></li>
+        </ul>
+        <p class="card-note">Hours editing — coming next.</p>
+      </article>
+      <article class="card">
+        <header class="card-h"><h3>Demo Data</h3></header>
+        <p class="card-note">All admin state lives in your browser's localStorage. To wipe everything and reseed, use the button in the sidebar.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<!-- Toast container -->
+<div class="toast-host" id="toast-host" aria-live="polite"></div>
+
+<!-- Edit modal (events, members, pricing) -->
+<div class="amodal-shade" id="amodal" role="dialog" aria-modal="true" hidden>
+  <div class="amodal" role="document">
+    <button class="amodal-close" id="amodal-close" aria-label="Close">×</button>
+    <div id="amodal-body"></div>
+  </div>
+</div>
+
+<script src="admin.js" defer></script>
+</body>
+</html>
