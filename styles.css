@@ -1801,24 +1801,6 @@ section + section { padding-top: clamp(80px, 12vw, 140px); }
 }
 .foot-easter { color: var(--orange); opacity: 0.6; }
 .foot-bottom a { color: var(--orange); }
-.foot-meta {
-  display: flex; align-items: center; gap: 16px;
-}
-.foot-admin {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--chalk-dim) !important;
-  padding: 4px 10px;
-  border: 1px solid rgba(245, 240, 229, 0.15);
-  border-radius: 999px;
-  transition: all var(--t-fast);
-}
-.foot-admin:hover {
-  color: var(--bg) !important;
-  background: var(--lime);
-  border-color: var(--lime);
-}
 
 /* ============================================================
    MODAL
