@@ -38,7 +38,52 @@
     members:  'scc-members',
     settings: 'scc-settings',
     seeded:   'scc-seeded',
+    users:    'scc-users',
+    shifts:   'scc-shifts',
+    currentUser: 'scc-current-user',
   };
+
+  // ---------- Permission model (RBAC) ---------------------------
+  // Edit this matrix to change what each role can do. The Users
+  // tab shows it in plain English; here's the machine version.
+  const ROLE_PERMS = {
+    admin:   ['*'],
+    manager: [
+      'dashboard.view','schedule.view','schedule.edit','schedule.edit-others',
+      'orders.view','orders.refund','analytics.view','accounting.view','accounting.edit',
+      'events.view','events.edit','members.view','members.edit',
+      'pricing.edit','routes.view','routes.edit',
+    ],
+    setter: [
+      'dashboard.view','schedule.view','schedule.edit-own',
+      'routes.view','routes.edit',
+      'orders.view','members.view','analytics.view',
+    ],
+    staff: [
+      'dashboard.view','schedule.view','schedule.edit-own',
+      'orders.view','members.view',
+    ],
+  };
+  const ROLE_LABELS = { admin:'Admin', manager:'Manager', setter:'Setter', staff:'Staff' };
+
+  function can(perm, role) {
+    role = role || (getCurrentUser()?.role) || 'admin';
+    const list = ROLE_PERMS[role] || [];
+    return list.includes('*') || list.includes(perm);
+  }
+  function getCurrentUser() {
+    const id = load(STORAGE.currentUser, null);
+    const users = load(STORAGE.users, []);
+    return users.find(u => u.id === id) || users[0] || null;
+  }
+  function setCurrentUser(id) {
+    save(STORAGE.currentUser, id);
+    applyPermissions();
+    renderUserSwitcher();
+    // Re-render whichever tab is active
+    const active = $$('.tab.active')[0]?.dataset.panel;
+    if (active && renderers[active]) renderers[active]();
+  }
 
   // ---------- Helpers -------------------------------------------
   const $  = (s, r=document) => r.querySelector(s);
@@ -95,8 +140,24 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAModal(); });
 
   // ---------- Seed mock data ------------------------------------
+  const SEED_VERSION = 2; // bump when seed shape changes
   function seedAll(force=false) {
-    if (load(STORAGE.seeded, false) && !force) return;
+    const seededVersion = load(STORAGE.seeded, 0);
+    const alreadyFresh = seededVersion >= SEED_VERSION;
+    if (alreadyFresh && !force) return;
+
+    // MIGRATION-SAFE: only initialize tables that are missing.
+    // `force` (from "Reseed Demo" button) wipes everything first.
+    if (force) {
+      Object.values(STORAGE).forEach(k => localStorage.removeItem(k));
+    }
+    const hasBookings = !force && load(STORAGE.bookings, null) !== null;
+    const hasExpenses = !force && load(STORAGE.expenses, null) !== null;
+    const hasEvents   = !force && load(STORAGE.events, null) !== null;
+    const hasRoutes   = !force && load(STORAGE.routes, null) !== null;
+    const hasMembers  = !force && load(STORAGE.members, null) !== null;
+    const hasUsers    = !force && load(STORAGE.users, null) !== null;
+    const hasShifts   = !force && load(STORAGE.shifts, null) !== null;
 
     // Orders: 60 over the last 30 days
     const PLANS = Object.keys(PRICE_DEFAULTS);
@@ -130,7 +191,7 @@
       });
     }
     orders.sort((a,b) => b.ts - a.ts);
-    save(STORAGE.bookings, orders);
+    if (!hasBookings) save(STORAGE.bookings, orders);
 
     // Expenses (last 60 days)
     const expCats = ['Rent','Utilities','Route Setting','Equipment','Marketing','Insurance','Wages','Pro Shop COGS','Software'];
@@ -162,7 +223,7 @@
       });
     }
     expensesSeed.sort((a,b) => b.date.localeCompare(a.date));
-    save(STORAGE.expenses, expensesSeed);
+    if (!hasExpenses) save(STORAGE.expenses, expensesSeed);
 
     // Events (mix past + future)
     const events = [
@@ -175,7 +236,7 @@
       { id:'ev7', name:'College Climb Night',    date: addDays(7),  time:'7:00 PM', cat:'Community', desc:'Show your student ID. Discounted entry, free coffee.', capacity: 40, signups: 27 },
       { id:'ev8', name:'BASECAMP 2 Members Preview', date: addDays(21), time:'6:00 PM', cat:'Members Only', desc:'Sneak peek of the new location for Annual & Monthly members.', capacity: 80, signups: 53 },
     ];
-    save(STORAGE.events, events);
+    if (!hasEvents) save(STORAGE.events, events);
 
     // Routes / walls
     const walls = [
@@ -185,7 +246,7 @@
       { id:'w4', name:'The Cave',  cycle: 21, lastSet: daysAgoIso(18) },
       { id:'w5', name:'Kid Wall',  cycle: 21, lastSet: daysAgoIso(11) },
     ];
-    save(STORAGE.routes, walls);
+    if (!hasRoutes) save(STORAGE.routes, walls);
 
     // Members
     const memberPlans = ['monthly','monthly','monthly','annual','monthly-hero','annual'];
@@ -205,7 +266,55 @@
         status: Math.random() < 0.92 ? 'active' : 'expired',
       });
     }
-    save(STORAGE.members, members);
+    if (!hasMembers) save(STORAGE.members, members);
+
+    // Users / staff accounts
+    const users = [
+      { id:'u1', name:'Edwin Chow',   email:'edwin@scc.co',   role:'admin',   color:'#FF6B1A', avatar:'EC', status:'active', lastActive: now },
+      { id:'u2', name:'Collin Jester',email:'collin@scc.co',  role:'admin',   color:'#D4E84A', avatar:'CJ', status:'active', lastActive: now - 30*60*1000 },
+      { id:'u3', name:'Ryan Perkins', email:'ryan@scc.co',    role:'manager', color:'#5BA8E8', avatar:'RP', status:'active', lastActive: now - 2*60*60*1000 },
+      { id:'u4', name:'Maya Holm',    email:'maya@scc.co',    role:'staff',   color:'#E13159', avatar:'MH', status:'active', lastActive: now - 1*86400000 },
+      { id:'u5', name:'Sam Cole',     email:'sam@scc.co',     role:'staff',   color:'#9D7BE8', avatar:'SC', status:'active', lastActive: now - 3*86400000 },
+      { id:'u6', name:'Jordan Reed',  email:'jordan@scc.co',  role:'staff',   color:'#4ECDC4', avatar:'JR', status:'active', lastActive: now - 4*60*60*1000 },
+      { id:'u7', name:'Nico Park',    email:'nico@scc.co',    role:'setter',  color:'#F5C242', avatar:'NP', status:'active', lastActive: now - 6*86400000 },
+    ];
+    if (!hasUsers) save(STORAGE.users, users);
+    if (!load(STORAGE.currentUser, null)) save(STORAGE.currentUser, 'u1');
+
+    // Shifts — 14 days back, 14 days forward
+    const SHIFT_ROLES = ['Floor','Front Desk','Setting','Coaching','Manager on Duty'];
+    const shifts = [];
+    for (let d = -14; d <= 14; d++) {
+      const date = new Date(now + d * 86400000);
+      const iso = date.toISOString().slice(0, 10);
+      const dow = date.getDay();
+      // Sat=6: 10-18, Sun=0: 13-18, M-F: 12-21
+      const open  = dow === 6 ? 10 : dow === 0 ? 13 : 12;
+      const close = dow === 6 ? 18 : dow === 0 ? 18 : 21;
+      // 2-4 shifts per day
+      const numShifts = irand(2, 4);
+      const used = new Set();
+      for (let s = 0; s < numShifts; s++) {
+        const user = pick(users.filter(u => !used.has(u.id)));
+        if (!user) break;
+        used.add(user.id);
+        // shift starts within first half of day, lasts 4-6 hours
+        const start = open + irand(0, Math.max(1, Math.floor((close - open) / 2)));
+        const end   = Math.min(close, start + irand(4, 6));
+        const role  = pick(SHIFT_ROLES);
+        shifts.push({
+          id: 'sh-' + iso + '-' + user.id + '-' + s,
+          userId: user.id,
+          date: iso,
+          start: pad2(start) + ':00',
+          end:   pad2(end) + ':00',
+          role,
+          notes: '',
+        });
+      }
+    }
+    if (!hasShifts) save(STORAGE.shifts, shifts);
+    function pad2(n) { return String(n).padStart(2,'0'); }
 
     // Settings defaults
     if (!load(STORAGE.settings, null)) {
@@ -217,7 +326,7 @@
       });
     }
 
-    save(STORAGE.seeded, true);
+    save(STORAGE.seeded, SEED_VERSION);
 
     function addDays(n) {
       const d = new Date(); d.setDate(d.getDate() + n);
@@ -233,11 +342,22 @@
   const tabBtns = $$('.sb-link[data-tab]');
   const tabPanels = $$('.tab[data-panel]');
   const titles = {
-    dashboard: 'Dashboard', orders: 'Orders', analytics: 'Analytics', accounting: 'Accounting',
-    events: 'Events & Programs', pricing: 'Pricing & Plans', members: 'Members',
-    routes: 'Route Setting', settings: 'Settings',
+    dashboard:'Dashboard', schedule:'Schedule', orders:'Orders', analytics:'Analytics',
+    accounting:'Accounting', events:'Events & Programs', pricing:'Pricing & Plans',
+    members:'Members', users:'Users & Permissions', routes:'Route Setting', settings:'Settings',
   };
   function activateTab(name) {
+    // Permission gate: redirect if user lacks access
+    const btn = tabBtns.find(b => b.dataset.tab === name);
+    const perm = btn?.dataset.perm;
+    if (perm && !can(perm)) {
+      // pick the first visible tab as a fallback
+      const visible = tabBtns.find(b => !b.classList.contains('hidden'));
+      if (visible && visible.dataset.tab !== name) {
+        activateTab(visible.dataset.tab);
+        return;
+      }
+    }
     tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
     tabPanels.forEach(p => p.classList.toggle('active', p.dataset.panel === name));
     $('#topbar-title').textContent = titles[name] || name;
@@ -251,6 +371,63 @@
   tabBtns.forEach(b => b.addEventListener('click', () => activateTab(b.dataset.tab)));
   $$('[data-jump]').forEach(el => el.addEventListener('click', () => activateTab(el.dataset.jump)));
   $('#burger')?.addEventListener('click', () => $('.sidebar').classList.toggle('open'));
+
+  // Apply permissions: hide tabs the current user can't see + lock gated buttons
+  function applyPermissions() {
+    tabBtns.forEach(b => {
+      const perm = b.dataset.perm;
+      const ok = !perm || can(perm);
+      b.classList.toggle('hidden', !ok);
+    });
+    $$('[data-gate]').forEach(el => {
+      const ok = can(el.dataset.gate);
+      el.classList.toggle('locked', !ok);
+    });
+  }
+
+  // ---------- View switcher (top-right dropdown) ----------------
+  function renderUserSwitcher() {
+    const me = getCurrentUser();
+    if (!me) return;
+    $('#user-avatar-pill').textContent = me.avatar;
+    $('#user-avatar-pill').style.background = me.color;
+    $('#user-name-pill').textContent = me.name;
+    $('#user-role-pill').textContent = ROLE_LABELS[me.role] || me.role;
+
+    const list = $('#user-menu-list');
+    while (list.firstChild) list.removeChild(list.firstChild);
+    load(STORAGE.users, []).forEach(u => {
+      const li = document.createElement('li');
+      if (u.id === me.id) li.classList.add('active');
+      const av = document.createElement('span');
+      av.className = 'user-avatar'; av.textContent = u.avatar;
+      av.style.background = u.color;
+      const meta = document.createElement('span');
+      meta.style.display = 'flex'; meta.style.flexDirection = 'column';
+      const n = document.createElement('span'); n.className = 'um-name'; n.textContent = u.name;
+      const r = document.createElement('span'); r.className = 'um-role'; r.textContent = ROLE_LABELS[u.role];
+      meta.appendChild(n); meta.appendChild(r);
+      li.appendChild(av); li.appendChild(meta);
+      li.onclick = () => {
+        setCurrentUser(u.id);
+        $('#user-menu').hidden = true;
+        toast('Viewing as ' + u.name + ' (' + ROLE_LABELS[u.role] + ')');
+      };
+      list.appendChild(li);
+    });
+  }
+  $('#user-trigger')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const menu = $('#user-menu');
+    menu.hidden = !menu.hidden;
+    $('#user-trigger').setAttribute('aria-expanded', String(!menu.hidden));
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#user-switcher')) {
+      const menu = $('#user-menu');
+      if (menu && !menu.hidden) menu.hidden = true;
+    }
+  });
 
   // ---------- Dashboard -----------------------------------------
   function renderDashboard() {
@@ -1057,29 +1234,691 @@
   // ---------- Reseed --------------------------------------------
   $('#seed-reset')?.addEventListener('click', () => {
     if (!confirm('Wipe all admin data and reseed with fresh demo data?')) return;
-    Object.values(STORAGE).forEach(k => localStorage.removeItem(k));
-    seedAll(true);
+    seedAll(true);  // force: wipes and reseeds everything
+    renderUserSwitcher();
+    applyPermissions();
     toast('Demo reseeded.', 'warn');
     activateTab('dashboard');
   });
 
+  // ============================================================
+  // SCHEDULE TAB
+  // ============================================================
+  let selectedDate = new Date().toISOString().slice(0, 10);
+  // Timeline starts at 8 AM, runs 14 hours → 9 PM (latest gym close).
+  const TIMELINE_START_HOUR = 8;
+  const TIMELINE_HOURS = 14;
+
+  function renderSchedule() {
+    renderDaySlider();
+    renderTimelineFor(selectedDate);
+    renderWeekSummary();
+    renderCoverageAlerts();
+    const me = getCurrentUser();
+    $('#sched-sub').textContent = can('schedule.edit')
+      ? "Who's on the floor. Tap a day to see the whole crew."
+      : "Viewing as " + me.name + " — everyone's schedule. Tap a shift to see details.";
+    // Today's shift count → sidebar badge
+    const todayIso = new Date().toISOString().slice(0,10);
+    const todayCount = load(STORAGE.shifts, []).filter(s => s.date === todayIso).length;
+    $('#badge-schedule').textContent = todayCount;
+  }
+
+  function renderDaySlider() {
+    const slider = $('#day-slider');
+    while (slider.firstChild) slider.removeChild(slider.firstChild);
+    const todayIso = new Date().toISOString().slice(0,10);
+    const shifts = load(STORAGE.shifts, []);
+    // Show 21 days centered on today (7 past, today, 13 future)
+    for (let i = -7; i <= 13; i++) {
+      const d = new Date(); d.setDate(d.getDate() + i);
+      const iso = d.toISOString().slice(0, 10);
+      const dayCount = shifts.filter(s => s.date === iso).length;
+
+      const pill = document.createElement('button');
+      pill.className = 'day-pill';
+      if (iso === todayIso) pill.classList.add('today');
+      if (iso === selectedDate) pill.classList.add('selected');
+      pill.setAttribute('role', 'tab');
+      pill.setAttribute('aria-selected', String(iso === selectedDate));
+
+      const day = document.createElement('span'); day.className = 'dp-day';
+      day.textContent = d.toLocaleDateString(undefined, { weekday: 'short' }).slice(0, 3).toUpperCase();
+      const num = document.createElement('span'); num.className = 'dp-num';
+      num.textContent = d.getDate();
+      const count = document.createElement('span'); count.className = 'dp-count';
+      count.textContent = dayCount ? dayCount + ' shift' + (dayCount === 1 ? '' : 's') : '·';
+
+      pill.appendChild(day); pill.appendChild(num); pill.appendChild(count);
+      pill.onclick = () => {
+        selectedDate = iso;
+        renderDaySlider();
+        renderTimelineFor(iso);
+        // Center the pill on mobile
+        pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      };
+      slider.appendChild(pill);
+    }
+    // Auto-center today/selected pill on mount
+    setTimeout(() => {
+      const sel = slider.querySelector('.day-pill.selected');
+      sel?.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' });
+    }, 0);
+  }
+
+  $('#day-prev')?.addEventListener('click', () => shiftDay(-1));
+  $('#day-next')?.addEventListener('click', () => shiftDay(1));
+  $('#sched-today')?.addEventListener('click', () => {
+    selectedDate = new Date().toISOString().slice(0,10);
+    renderSchedule();
+  });
+  function shiftDay(delta) {
+    const d = new Date(selectedDate + 'T12:00');
+    d.setDate(d.getDate() + delta);
+    selectedDate = d.toISOString().slice(0,10);
+    renderSchedule();
+  }
+
+  function renderTimelineFor(iso) {
+    const timeline = $('#timeline');
+    while (timeline.firstChild) timeline.removeChild(timeline.firstChild);
+
+    // Hour labels (left column)
+    for (let i = 0; i < TIMELINE_HOURS; i++) {
+      const h = TIMELINE_START_HOUR + i;
+      const label = document.createElement('div');
+      label.className = 'timeline-hour';
+      label.style.gridRow = (i + 1).toString();
+      label.textContent = formatHour(h);
+      timeline.appendChild(label);
+    }
+
+    // Lane (right column, spans all rows)
+    const lane = document.createElement('div');
+    lane.className = 'timeline-lane';
+    lane.style.gridColumn = '2';
+    lane.style.gridRow = '1 / span ' + TIMELINE_HOURS;
+    timeline.appendChild(lane);
+
+    // Build shifts for this day
+    const allShifts = load(STORAGE.shifts, []).filter(s => s.date === iso);
+    const users = load(STORAGE.users, []);
+    const me = getCurrentUser();
+
+    // Day label / count
+    const date = new Date(iso + 'T12:00');
+    $('#sched-day-label').textContent = date.toLocaleDateString(undefined, {
+      weekday: 'long', month: 'long', day: 'numeric',
+    });
+    $('#sched-day-count').textContent = allShifts.length
+      ? allShifts.length + ' ' + (allShifts.length === 1 ? 'shift' : 'shifts') + ' scheduled'
+      : 'Nobody scheduled.';
+
+    // Empty state
+    if (allShifts.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'timeline-empty';
+      empty.textContent = 'No shifts on this day. Tap + to add one.';
+      timeline.appendChild(empty);
+      $('#sched-legend').replaceChildren();
+      return;
+    }
+
+    // Sort by start time
+    allShifts.sort((a, b) => a.start.localeCompare(b.start));
+
+    // Render each shift as absolutely-positioned block in the lane
+    const rowHeight = 56; // matches CSS
+    allShifts.forEach(sh => {
+      const user = users.find(u => u.id === sh.userId) || { name: '—', color: '#888', avatar: '?' };
+      const startH = toFloatHour(sh.start);
+      const endH = toFloatHour(sh.end);
+      const topPx = (startH - TIMELINE_START_HOUR) * rowHeight;
+      const heightPx = Math.max(50, (endH - startH) * rowHeight - 4);
+
+      const block = document.createElement('div');
+      block.className = 'shift';
+      if (user.id === me.id) block.classList.add('is-me');
+      block.style.top = topPx + 'px';
+      block.style.height = heightPx + 'px';
+      block.style.setProperty('--shift-color', user.color);
+
+      const head = document.createElement('div'); head.className = 's-head';
+      const av = document.createElement('span'); av.className = 's-avatar'; av.textContent = user.avatar;
+      const nm = document.createElement('span'); nm.textContent = user.name;
+      head.appendChild(av); head.appendChild(nm);
+
+      const time = document.createElement('div'); time.className = 's-time';
+      time.textContent = formatTimeRange(sh.start, sh.end);
+
+      const role = document.createElement('div'); role.className = 's-role'; role.textContent = sh.role;
+
+      block.appendChild(head); block.appendChild(time); block.appendChild(role);
+
+      // Click to edit (gated by permission)
+      const canEditThis = can('schedule.edit-others') || can('schedule.edit') ||
+                          (can('schedule.edit-own') && user.id === me.id);
+      if (canEditThis) {
+        block.onclick = () => openShiftEdit(sh.id);
+        block.title = 'Click to edit';
+      } else {
+        block.style.cursor = 'default';
+        block.title = user.name + ' · ' + sh.role + ' · ' + formatTimeRange(sh.start, sh.end);
+      }
+      lane.appendChild(block);
+    });
+
+    // Legend (unique users on this day)
+    const legend = $('#sched-legend');
+    while (legend.firstChild) legend.removeChild(legend.firstChild);
+    const seen = new Set();
+    allShifts.forEach(sh => {
+      if (seen.has(sh.userId)) return;
+      seen.add(sh.userId);
+      const u = users.find(x => x.id === sh.userId);
+      if (!u) return;
+      const item = document.createElement('div'); item.className = 'sched-legend-item';
+      const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = u.color;
+      const label = document.createElement('span'); label.textContent = u.name.split(' ')[0];
+      item.appendChild(sw); item.appendChild(label);
+      legend.appendChild(item);
+    });
+  }
+
+  function renderWeekSummary() {
+    const ul = $('#week-summary');
+    while (ul.firstChild) ul.removeChild(ul.firstChild);
+    const todayIso = new Date().toISOString().slice(0,10);
+    const startOfWeek = (() => {
+      const d = new Date(); d.setHours(0,0,0,0);
+      d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); // Mon
+      return d;
+    })();
+    const shifts = load(STORAGE.shifts, []);
+    const users = load(STORAGE.users, []);
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(startOfWeek); d.setDate(d.getDate() + i);
+      const iso = d.toISOString().slice(0, 10);
+      const day = shifts.filter(s => s.date === iso);
+      const li = document.createElement('li');
+      const lbl = document.createElement('span'); lbl.className = 'ws-day';
+      lbl.textContent = d.toLocaleDateString(undefined, { weekday:'short' }).toUpperCase() + ' ' + d.getDate();
+      if (iso === todayIso) lbl.style.color = 'var(--orange)';
+      const stack = document.createElement('span'); stack.className = 'ws-stack';
+      const ids = [...new Set(day.map(s => s.userId))];
+      ids.slice(0, 4).forEach(id => {
+        const u = users.find(x => x.id === id);
+        if (!u) return;
+        const av = document.createElement('span'); av.className = 'user-avatar';
+        av.textContent = u.avatar; av.style.background = u.color; av.style.color = '#0F0E13';
+        stack.appendChild(av);
+      });
+      const count = document.createElement('span'); count.className = 'ws-count';
+      count.textContent = day.length || '—';
+      li.appendChild(lbl); li.appendChild(stack); li.appendChild(count);
+      li.style.cursor = 'pointer';
+      li.onclick = () => { selectedDate = iso; renderSchedule(); };
+      ul.appendChild(li);
+    }
+  }
+
+  function renderCoverageAlerts() {
+    const ul = $('#coverage-alerts');
+    while (ul.firstChild) ul.removeChild(ul.firstChild);
+    const shifts = load(STORAGE.shifts, []);
+    const todayIso = new Date().toISOString().slice(0,10);
+    const alerts = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(); d.setDate(d.getDate() + i);
+      const iso = d.toISOString().slice(0,10);
+      const count = shifts.filter(s => s.date === iso).length;
+      if (count === 0) alerts.push({ kind:'bad', text: dayName(d) + ' has nobody scheduled.' });
+      else if (count === 1) alerts.push({ kind:'warn', text: dayName(d) + ' is single-staffed.' });
+    }
+    if (alerts.length === 0) {
+      alerts.push({ kind:'ok', text:'Next 7 days are fully covered.' });
+    }
+    alerts.forEach(a => {
+      const li = document.createElement('li');
+      const dot = document.createElement('span'); dot.className = 'ca-dot ' + a.kind;
+      const text = document.createElement('span'); text.className = 'ca-text';
+      text.textContent = a.text;
+      li.appendChild(dot); li.appendChild(text);
+      ul.appendChild(li);
+    });
+    function dayName(d) {
+      return d.toLocaleDateString(undefined, { weekday:'long' });
+    }
+  }
+
+  function openShiftEdit(id) {
+    const shifts = load(STORAGE.shifts, []);
+    const me = getCurrentUser();
+    const sh = id ? shifts.find(x => x.id === id) : {
+      id: 'sh-' + Date.now().toString(36),
+      userId: me.id,
+      date: selectedDate,
+      start: '12:00',
+      end: '17:00',
+      role: 'Floor',
+      notes: '',
+    };
+
+    // Permission check
+    if (id) {
+      const canEdit = can('schedule.edit-others') || can('schedule.edit') ||
+                      (can('schedule.edit-own') && sh.userId === me.id);
+      if (!canEdit) {
+        toast('You don\'t have permission to edit this shift.', 'warn');
+        return;
+      }
+    } else if (!can('schedule.edit') && !can('schedule.edit-own')) {
+      toast('You can\'t create shifts.', 'warn');
+      return;
+    }
+
+    const users = load(STORAGE.users, []);
+
+    openAModal((body) => {
+      const h = document.createElement('h3');
+      h.textContent = id ? 'Edit Shift' : 'New Shift';
+      body.appendChild(h);
+
+      const form = document.createElement('form');
+      form.className = 'form-stack';
+
+      // Staff select
+      const sLab = document.createElement('label'); sLab.textContent = 'Staff';
+      const sSel = document.createElement('select'); sSel.id = 'sh-user';
+      users.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.name + ' (' + ROLE_LABELS[u.role] + ')';
+        if (u.id === sh.userId) opt.selected = true;
+        sSel.appendChild(opt);
+      });
+      // Lock to self if user only has schedule.edit-own
+      if (!can('schedule.edit') && !can('schedule.edit-others') && can('schedule.edit-own')) {
+        sSel.value = me.id; sSel.disabled = true;
+      }
+      sLab.appendChild(sSel);
+      form.appendChild(sLab);
+
+      // Date
+      const dLab = document.createElement('label'); dLab.textContent = 'Date';
+      const dInp = document.createElement('input');
+      dInp.type = 'date'; dInp.id = 'sh-date'; dInp.value = sh.date;
+      dLab.appendChild(dInp);
+      form.appendChild(dLab);
+
+      // Start + End in a row
+      const row = document.createElement('div');
+      row.style.display = 'grid'; row.style.gridTemplateColumns = '1fr 1fr'; row.style.gap = '10px';
+      ['Start','End'].forEach((label, i) => {
+        const id = i === 0 ? 'sh-start' : 'sh-end';
+        const val = i === 0 ? sh.start : sh.end;
+        const l = document.createElement('label'); l.textContent = label;
+        const inp = document.createElement('input');
+        inp.type = 'time'; inp.id = id; inp.value = val;
+        l.appendChild(inp); row.appendChild(l);
+      });
+      form.appendChild(row);
+
+      // Role
+      const rLab = document.createElement('label'); rLab.textContent = 'Role';
+      const rSel = document.createElement('select'); rSel.id = 'sh-role';
+      ['Floor','Front Desk','Setting','Coaching','Manager on Duty','Cleaning','Pro Shop'].forEach(r => {
+        const opt = document.createElement('option'); opt.value = r; opt.textContent = r;
+        if (r === sh.role) opt.selected = true;
+        rSel.appendChild(opt);
+      });
+      rLab.appendChild(rSel);
+      form.appendChild(rLab);
+
+      // Notes
+      const nLab = document.createElement('label'); nLab.textContent = 'Notes';
+      const nTxt = document.createElement('textarea');
+      nTxt.id = 'sh-notes'; nTxt.rows = 2; nTxt.value = sh.notes || '';
+      nLab.appendChild(nTxt);
+      form.appendChild(nLab);
+
+      // Action row
+      const actions = document.createElement('div');
+      actions.style.display = 'flex'; actions.style.gap = '8px';
+      actions.style.justifyContent = 'space-between'; actions.style.marginTop = '8px';
+
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn-prim'; saveBtn.type = 'submit';
+      saveBtn.textContent = id ? 'Save Shift' : 'Create Shift';
+
+      if (id) {
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'btn-ghost'; del.textContent = 'Delete';
+        del.style.color = 'var(--coral)'; del.style.borderColor = 'rgba(225,49,89,0.3)';
+        del.onclick = () => {
+          if (!confirm('Delete this shift?')) return;
+          const all = load(STORAGE.shifts, []);
+          save(STORAGE.shifts, all.filter(x => x.id !== sh.id));
+          toast('Shift deleted.', 'warn');
+          closeAModal();
+          renderSchedule();
+        };
+        actions.appendChild(del);
+      } else {
+        actions.appendChild(document.createElement('span'));
+      }
+      actions.appendChild(saveBtn);
+      form.appendChild(actions);
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const data = {
+          id: sh.id,
+          userId: $('#sh-user').value,
+          date: $('#sh-date').value,
+          start: $('#sh-start').value,
+          end: $('#sh-end').value,
+          role: $('#sh-role').value,
+          notes: $('#sh-notes').value.trim(),
+        };
+        if (data.start >= data.end) { toast('End time must be after start.', 'warn'); return; }
+        const all = load(STORAGE.shifts, []);
+        const idx = all.findIndex(x => x.id === sh.id);
+        if (idx >= 0) all[idx] = data; else all.push(data);
+        save(STORAGE.shifts, all);
+        toast(id ? 'Shift saved.' : 'Shift created.');
+        closeAModal();
+        // Jump to that day if user picked a different date
+        selectedDate = data.date;
+        renderSchedule();
+      };
+
+      body.appendChild(form);
+    });
+  }
+
+  $('#sched-add')?.addEventListener('click', () => openShiftEdit(null));
+  $('#sched-add-fab')?.addEventListener('click', () => openShiftEdit(null));
+
+  function toFloatHour(hm) {
+    const [h, m] = hm.split(':').map(Number);
+    return h + (m || 0) / 60;
+  }
+  function formatHour(h) {
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const v = h > 12 ? h - 12 : h === 0 ? 12 : h;
+    return v + ' ' + ampm;
+  }
+  function formatTimeRange(s, e) {
+    const [sh, sm] = s.split(':').map(Number);
+    const [eh, em] = e.split(':').map(Number);
+    const fmt = (h, m) => {
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const v = h > 12 ? h - 12 : h === 0 ? 12 : h;
+      return v + (m ? ':' + String(m).padStart(2,'0') : '') + ampm;
+    };
+    return fmt(sh, sm) + ' – ' + fmt(eh, em);
+  }
+
+  // ============================================================
+  // USERS TAB
+  // ============================================================
+  function renderUsers() {
+    const all = load(STORAGE.users, []);
+    const search = $('#users-search').value.trim().toLowerCase();
+    const filter = $('#users-filter').value;
+    const list = all.filter(u => {
+      if (filter && u.role !== filter) return false;
+      if (!search) return true;
+      return u.name.toLowerCase().includes(search) || u.email.toLowerCase().includes(search);
+    });
+    const me = getCurrentUser();
+    const tb = $('#users-body');
+    while (tb.firstChild) tb.removeChild(tb.firstChild);
+
+    list.forEach(u => {
+      const tr = document.createElement('tr');
+
+      // Avatar
+      const avTd = document.createElement('td'); avTd.style.width = '50px';
+      const av = document.createElement('div'); av.className = 'users-row-avatar';
+      av.textContent = u.avatar; av.style.background = u.color;
+      avTd.appendChild(av); tr.appendChild(avTd);
+
+      // Name (with "you" marker)
+      const nTd = document.createElement('td');
+      const nn = document.createElement('div'); nn.style.fontWeight = '500';
+      nn.textContent = u.name + (u.id === me.id ? ' (you)' : '');
+      nTd.appendChild(nn);
+      tr.appendChild(nTd);
+
+      // Email
+      const eTd = document.createElement('td');
+      eTd.style.fontFamily = 'var(--font-mono)';
+      eTd.style.fontSize = '12px';
+      eTd.style.color = 'var(--chalk-dim)';
+      eTd.textContent = u.email;
+      tr.appendChild(eTd);
+
+      // Role tag
+      const rTd = document.createElement('td');
+      const tag = document.createElement('span');
+      tag.className = 'tag role-tag-' + u.role;
+      tag.textContent = ROLE_LABELS[u.role];
+      rTd.appendChild(tag);
+      tr.appendChild(rTd);
+
+      // Last Active
+      const laTd = document.createElement('td');
+      laTd.style.fontFamily = 'var(--font-mono)';
+      laTd.style.fontSize = '12px';
+      laTd.style.color = 'var(--chalk-dim)';
+      laTd.textContent = relativeTime(u.lastActive);
+      tr.appendChild(laTd);
+
+      // Status
+      const sTd = document.createElement('td');
+      const st = document.createElement('span');
+      st.className = 'tag tag-' + u.status;
+      st.textContent = u.status;
+      sTd.appendChild(st);
+      tr.appendChild(sTd);
+
+      // Actions
+      const aTd = document.createElement('td');
+      aTd.style.textAlign = 'right';
+      const edit = document.createElement('button');
+      edit.className = 'btn-tiny'; edit.textContent = 'Edit';
+      edit.onclick = () => openUserEdit(u.id);
+      aTd.appendChild(edit);
+      tr.appendChild(aTd);
+
+      tb.appendChild(tr);
+    });
+  }
+  $('#users-search')?.addEventListener('input', renderUsers);
+  $('#users-filter')?.addEventListener('change', renderUsers);
+  $('#users-add')?.addEventListener('click', () => openUserEdit(null));
+
+  function openUserEdit(id) {
+    const users = load(STORAGE.users, []);
+    const u = id ? users.find(x => x.id === id) : {
+      id: 'u-' + Date.now().toString(36),
+      name: '', email: '', role: 'staff',
+      color: pick(['#FF6B1A','#D4E84A','#5BA8E8','#E13159','#9D7BE8','#4ECDC4','#F5C242']),
+      avatar: 'NN', status: 'active', lastActive: Date.now(),
+    };
+    openAModal((body) => {
+      const h = document.createElement('h3');
+      h.textContent = id ? 'Edit User' : 'New User';
+      body.appendChild(h);
+
+      const form = document.createElement('form');
+      form.className = 'form-stack';
+
+      [['Name','text','u-name', u.name],
+       ['Email','email','u-email', u.email]].forEach(([label, type, fid, val]) => {
+        const l = document.createElement('label'); l.textContent = label;
+        const i = document.createElement('input'); i.type = type; i.id = fid; i.value = val;
+        l.appendChild(i); form.appendChild(l);
+      });
+
+      // Role
+      const rLab = document.createElement('label'); rLab.textContent = 'Role';
+      const rSel = document.createElement('select'); rSel.id = 'u-role';
+      Object.keys(ROLE_PERMS).forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r; opt.textContent = ROLE_LABELS[r];
+        if (r === u.role) opt.selected = true;
+        rSel.appendChild(opt);
+      });
+      rLab.appendChild(rSel);
+      form.appendChild(rLab);
+
+      // Color
+      const cLab = document.createElement('label'); cLab.textContent = 'Schedule color';
+      const cInp = document.createElement('input');
+      cInp.type = 'color'; cInp.id = 'u-color'; cInp.value = u.color;
+      cLab.appendChild(cInp);
+      form.appendChild(cLab);
+
+      // Initials
+      const aLab = document.createElement('label'); aLab.textContent = 'Initials (2 letters)';
+      const aInp = document.createElement('input');
+      aInp.type = 'text'; aInp.id = 'u-avatar'; aInp.value = u.avatar; aInp.maxLength = 2;
+      aLab.appendChild(aInp);
+      form.appendChild(aLab);
+
+      // Status
+      const sLab = document.createElement('label'); sLab.textContent = 'Status';
+      const sSel = document.createElement('select'); sSel.id = 'u-status';
+      ['active','inactive'].forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        if (s === u.status) opt.selected = true;
+        sSel.appendChild(opt);
+      });
+      sLab.appendChild(sSel);
+      form.appendChild(sLab);
+
+      // Show role permissions read-out
+      const permHead = document.createElement('div');
+      permHead.className = 'perm-section-h';
+      permHead.textContent = 'Permissions for this role';
+      form.appendChild(permHead);
+
+      const permList = document.createElement('div');
+      permList.style.fontFamily = 'var(--font-mono)';
+      permList.style.fontSize = '12px';
+      permList.style.color = 'var(--chalk-dim)';
+      permList.style.padding = '8px 12px';
+      permList.style.background = 'var(--bg-3)';
+      permList.style.borderRadius = '8px';
+      const renderPerms = () => {
+        const role = rSel.value;
+        const perms = ROLE_PERMS[role] || [];
+        permList.textContent = perms.includes('*')
+          ? '* — full access (admin can do everything)'
+          : perms.join(', ');
+      };
+      renderPerms();
+      rSel.onchange = renderPerms;
+      form.appendChild(permList);
+
+      // Action row
+      const actions = document.createElement('div');
+      actions.style.display = 'flex'; actions.style.gap = '8px';
+      actions.style.justifyContent = 'space-between'; actions.style.marginTop = '12px';
+
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn-prim'; saveBtn.type = 'submit';
+      saveBtn.textContent = id ? 'Save' : 'Create';
+
+      if (id && u.id !== getCurrentUser().id) {
+        const del = document.createElement('button');
+        del.type = 'button'; del.className = 'btn-ghost'; del.textContent = 'Delete';
+        del.style.color = 'var(--coral)'; del.style.borderColor = 'rgba(225,49,89,0.3)';
+        del.onclick = () => {
+          if (!confirm('Delete ' + u.name + '? Their shifts will be unassigned.')) return;
+          const all = load(STORAGE.users, []);
+          save(STORAGE.users, all.filter(x => x.id !== u.id));
+          // Also unassign their shifts
+          const allShifts = load(STORAGE.shifts, []);
+          save(STORAGE.shifts, allShifts.filter(s => s.userId !== u.id));
+          toast('User deleted.', 'warn');
+          closeAModal();
+          renderUsers();
+        };
+        actions.appendChild(del);
+      } else {
+        actions.appendChild(document.createElement('span'));
+      }
+      actions.appendChild(saveBtn);
+      form.appendChild(actions);
+
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const data = {
+          id: u.id,
+          name: $('#u-name').value.trim(),
+          email: $('#u-email').value.trim(),
+          role: $('#u-role').value,
+          color: $('#u-color').value,
+          avatar: ($('#u-avatar').value.trim() || u.name.slice(0,2)).toUpperCase().slice(0,2),
+          status: $('#u-status').value,
+          lastActive: u.lastActive || Date.now(),
+        };
+        const all = load(STORAGE.users, []);
+        const idx = all.findIndex(x => x.id === u.id);
+        if (idx >= 0) all[idx] = data; else all.push(data);
+        save(STORAGE.users, all);
+        toast(id ? 'User saved.' : 'User created.');
+        closeAModal();
+        renderUsers();
+        renderUserSwitcher();
+      };
+
+      body.appendChild(form);
+    });
+  }
+
+  function relativeTime(ts) {
+    const diff = Date.now() - ts;
+    const min = Math.floor(diff / 60000);
+    if (min < 1) return 'just now';
+    if (min < 60) return min + 'm ago';
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return hr + 'h ago';
+    const days = Math.floor(hr / 24);
+    return days + 'd ago';
+  }
+
   // ---------- Renderers map -------------------------------------
   const renderers = {
     dashboard: renderDashboard,
+    schedule: renderSchedule,
     orders: renderOrders,
     analytics: renderAnalytics,
     accounting: renderAccounting,
     events: renderEvents,
     pricing: renderPricing,
     members: renderMembers,
+    users: renderUsers,
     routes: renderRoutes,
     settings: renderSettings,
   };
 
   // ---------- Boot ----------------------------------------------
   seedAll();
+  renderUserSwitcher();
+  applyPermissions();
   const initialTab = (location.hash || '#dashboard').slice(1);
-  activateTab(renderers[initialTab] ? initialTab : 'dashboard');
+  // If user doesn't have permission for hashed tab, fall back to dashboard
+  const initBtn = tabBtns.find(b => b.dataset.tab === initialTab);
+  const initOk = !initBtn?.dataset.perm || can(initBtn.dataset.perm);
+  activateTab(renderers[initialTab] && initOk ? initialTab : 'dashboard');
   // re-render dashboard every minute so live data feels alive
   setInterval(() => {
     if ($('.tab[data-panel="dashboard"]').classList.contains('active')) renderDashboard();
